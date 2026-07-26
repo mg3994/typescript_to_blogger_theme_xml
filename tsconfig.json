@@ -12,7 +12,12 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "jsx": "react-jsx",
-    "jsxImportSource": "blogger-theme"
+    "jsxImportSource": "blogger-theme",
+    "baseUrl": ".",
+    "paths": {
+      "blogger-theme": ["./src/index.ts"],
+      "blogger-theme/*": ["./src/*"]
+    }
   },
   "include": ["src/**/*"]
 }
