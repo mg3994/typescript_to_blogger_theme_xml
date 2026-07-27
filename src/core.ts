@@ -35,6 +35,8 @@ export function escapeXml(text: string): string {
  * All renderable objects in this package extend or implement [Component].
  */
 export abstract class Component {
+  public props?: any;
+
   abstract build(): Iterable<Component> | Component | null | void;
 
   /**
