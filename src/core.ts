@@ -1,15 +1,32 @@
 /**
- * Escapes XML reserved characters in text content and filters XML 1.0 restricted control characters (C0 and C1).
+ * Escapes XML reserved characters in text content, filters XML 1.0 restricted control characters (C0 and C1),
+ * and converts non-ASCII Unicode characters/symbols into safe XML hexadecimal Numeric Character References (NCRs).
  */
 export function escapeXml(text: string): string {
-  return text.replace(/[&<>"']|[\x00-\x08\x0B\x0C\x0E-\x1F\x7F-\x9F]/g, (char) => {
+  const regex = /[&<>"']|[\x00-\x08\x0B\x0C\x0E-\x1F\x7F-\x9F]|[^\x09\x0A\x0D\x20-\x7E]/gu;
+  return text.replace(regex, (char) => {
     switch (char) {
       case '&': return '&amp;';
       case '<': return '&lt;';
       case '>': return '&gt;';
       case '"': return '&quot;';
       case "'": return '&apos;';
-      default: return ' '; // restricted C0 and C1 control characters
+      default: {
+        const code = char.codePointAt(0);
+        if (code === undefined) return ' ';
+        // restricted XML 1.0 C0 and C1 control characters are replaced with space
+        if (
+          (code >= 0x00 && code <= 0x08) ||
+          code === 0x0B ||
+          code === 0x0C ||
+          (code >= 0x0E && code <= 0x1F) ||
+          (code >= 0x7F && code <= 0x9F)
+        ) {
+          return ' ';
+        }
+        // convert all other non-ASCII characters to hexadecimal XML numeric character references
+        return '&#x' + code.toString(16).toUpperCase() + ';';
+      }
     }
   });
 }
