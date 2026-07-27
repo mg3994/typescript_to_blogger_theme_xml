@@ -68,6 +68,18 @@ async function compile(entryPath: string, outputPath?: string) {
       return;
     }
 
+    // Run structural diagnostics/devtool validation on the compiled component/theme
+    try {
+      const { BloggerThemeValidator } = await import('./devtool.js');
+      const validator = new BloggerThemeValidator();
+      const rootToValidate = theme.root || theme;
+      if (rootToValidate) {
+        validator.checkAndReport(rootToValidate, false);
+      }
+    } catch (e) {
+      // ignore validation reporting failures
+    }
+
     let xml: string;
     if (typeof theme.generate === 'function') {
       xml = theme.generate();

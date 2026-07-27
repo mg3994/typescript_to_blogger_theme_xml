@@ -41,21 +41,25 @@ const BlogLayout = () => (
     <BlogHeader />
 
     <main class="content-area">
-      {/* Example of Blogger custom inclusion/parameters using TSX */}
-      <BIncludable id="main" varName="post">
-        <div class="post-item-view" expr:id="'post-' + data:post.id">
-          <h2 expr:class="data:post.class">
-            <a expr:href="data:post.url"><BData value="post.title" /></a>
-          </h2>
-          <div class="post-body">
-            <BData value="post.body" />
-          </div>
-        </div>
-      </BIncludable>
+      {/* Example of Blogger custom inclusion/parameters using TSX inside a valid Widget container */}
+      <BSection id="main-content-sec">
+        <BWidget id="Blog1" type="Blog">
+          <BIncludable id="main">
+            <div class="post-item-view" expr:id="'post-' + data:post.id">
+              <h2 expr:class="data:post.class">
+                <a expr:href="data:post.url"><BData value="post.title" /></a>
+              </h2>
+              <div class="post-body">
+                <BData value="post.body" />
+              </div>
+            </div>
 
-      <BInclude name="main">
-        <BParam value="data:post" />
-      </BInclude>
+            <BInclude name="postShareButtons">
+              <BParam value="data:post" />
+            </BInclude>
+          </BIncludable>
+        </BWidget>
+      </BSection>
 
       {/* 1. This is where our React application will mount! */}
       <div id="react-root"></div>

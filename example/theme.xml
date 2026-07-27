@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<html b:css="false" b:defaultwidgetversion="2" b:layoutsversion="3" b:responsive="true" expr:dir="data:blog.languageDirection" expr:lang="data:blog.locale" xmlns="http://www.w3.org/1999/xhtml" xmlns:b="http://www.google.com/2005/gml/b" xmlns:data="http://www.google.com/2005/gml/data" xmlns:expr="http://www.google.com/2005/gml/expr"><head><title>Blogger Theme CLI Test</title><!-- prettier-ignore --><b:skin><![CDATA[
+body { background: #eee; }
+]]></b:skin></head><body><div class="wrapper-pane"><b:section id="header-area" class="header-section" maxwidgets="1" showaddelement="yes"><b:widget id="Header1" type="Header" title="Blog Header Title" locked="true"/></b:section><b:if cond="data:view.isPost"><div class="post-item"><data:post.body/></div></b:if></div></body></html>

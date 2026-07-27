@@ -93,5 +93,7 @@ export { BClientScript } from './client-script.js';
 
 export { BloggerTheme } from './theme-utility.js';
 
+export { BloggerThemeValidator, ValidationError } from './devtool.js';
+
 // Support JSX classic pragma
 export { h, Fragment as jsxFragment } from './jsx-runtime.js';

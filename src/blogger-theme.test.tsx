@@ -25,6 +25,7 @@ import {
   Data,
   Feeds,
   h,
+  BloggerThemeValidator,
 } from './index.js';
 
 describe('Core Component Model & Renderer', () => {
@@ -236,5 +237,67 @@ describe('BloggerTheme Generation', () => {
     expect(xml).toContain('<head><title>My Generated Theme</title>');
     expect(xml).toContain('<body><div class="wrapper"><b:section id="main" showaddelement="yes"/></div></body>');
     expect(xml).toContain('</html>');
+  });
+});
+
+describe('Blogger Structure Validator (Devtool)', () => {
+  it('detects nested b:section elements', () => {
+    const invalidTree = (
+      <BSection id="parent">
+        <BSection id="child" />
+      </BSection>
+    );
+    const validator = new BloggerThemeValidator();
+    const errors = validator.validate(invalidTree);
+    expect(errors.some(e => e.message.includes('nest a <b:section> inside another <b:section>'))).toBe(true);
+  });
+
+  it('detects b:widget nested incorrectly (outside b:section)', () => {
+    const invalidTree = (
+      <div>
+        <BWidget id="Blog1" type="Blog" />
+      </div>
+    );
+    const validator = new BloggerThemeValidator();
+    const errors = validator.validate(invalidTree);
+    expect(errors.some(e => e.message.includes('<b:widget> elements must sit directly inside a <b:section>'))).toBe(true);
+  });
+
+  it('detects b:section placed inside invalid containers', () => {
+    const invalidTree = (
+      <div>
+        <p>
+          <BSection id="main" />
+        </p>
+      </div>
+    );
+    const validator = new BloggerThemeValidator();
+    const errors = validator.validate(invalidTree);
+    expect(errors.some(e => e.message.includes('Invalid section placement'))).toBe(true);
+  });
+
+  it('detects invalid child direct tags inside b:widget', () => {
+    const invalidTree = (
+      <BSection id="main">
+        <BWidget id="Blog1" type="Blog">
+          <div>Invalid directly inside widget</div>
+        </BWidget>
+      </BSection>
+    );
+    const validator = new BloggerThemeValidator();
+    const errors = validator.validate(invalidTree);
+    expect(errors.some(e => e.message.includes('Invalid child inside <b:widget>'))).toBe(true);
+  });
+
+  it('detects duplicate IDs for sections and widgets', () => {
+    const invalidTree = (
+      <BSection id="main">
+        <BWidget id="widget1" type="Blog" />
+        <BWidget id="widget1" type="Blog" />
+      </BSection>
+    );
+    const validator = new BloggerThemeValidator();
+    const errors = validator.validate(invalidTree);
+    expect(errors.some(e => e.message.includes("Duplicate ID found: 'widget1'"))).toBe(true);
   });
 });
