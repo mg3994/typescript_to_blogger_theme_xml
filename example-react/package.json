@@ -1,0 +1,20 @@
+{
+  "name": "example-react-blogger-theme",
+  "version": "1.0.0",
+  "description": "An example project embedding a React application into a Blogger theme XML template using blogger-theme and esbuild.",
+  "type": "module",
+  "scripts": {
+    "build": "npx tsx build.tsx"
+  },
+  "dependencies": {
+    "blogger-theme": "file:..",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "typescript": "^5.3.0",
+    "tsx": "^4.23.1"
+  }
+}
