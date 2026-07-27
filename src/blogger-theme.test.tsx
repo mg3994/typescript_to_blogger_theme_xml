@@ -300,4 +300,28 @@ describe('Blogger Structure Validator (Devtool)', () => {
     const errors = validator.validate(invalidTree);
     expect(errors.some(e => e.message.includes("Duplicate ID found: 'widget1'"))).toBe(true);
   });
+
+  it('detects nested <a> anchor tag warnings', () => {
+    const invalidTree = (
+      <a>
+        <span>
+          <a>Nested link</a>
+        </span>
+      </a>
+    );
+    const validator = new BloggerThemeValidator();
+    const warnings = validator.validate(invalidTree);
+    expect(warnings.some(w => w.type === 'warning' && w.message.includes('cannot nest an <a> tag inside another <a> tag'))).toBe(true);
+  });
+
+  it('detects <li> element placed outside a list container warning', () => {
+    const invalidTree = (
+      <div>
+        <li>ListItem outside ul/ol</li>
+      </div>
+    );
+    const validator = new BloggerThemeValidator();
+    const warnings = validator.validate(invalidTree);
+    expect(warnings.some(w => w.type === 'warning' && w.message.includes('An <li> element must sit directly inside'))).toBe(true);
+  });
 });

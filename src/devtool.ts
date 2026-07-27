@@ -154,6 +154,47 @@ export class BloggerThemeValidator {
         }
       }
 
+      // 6. Validate standard HTML/XHTML semantic rules as warnings
+      if (tag === 'a' && path.includes('a')) {
+        this.errors.push({
+          type: 'warning',
+          message: 'Invalid HTML nesting: You cannot nest an <a> tag inside another <a> tag.',
+          path: [...path, tag]
+        });
+      }
+
+      if (tag === 'form' && path.includes('form')) {
+        this.errors.push({
+          type: 'warning',
+          message: 'Invalid HTML nesting: You cannot nest a <form> inside another <form>.',
+          path: [...path, tag]
+        });
+      }
+
+      if (tag === 'li' && parentTag !== 'ul' && parentTag !== 'ol' && parentTag !== 'menu') {
+        this.errors.push({
+          type: 'warning',
+          message: `Invalid HTML nesting: An <li> element must sit directly inside a <ul> or <ol> element (not <${parentTag || 'Fragment'}>).`,
+          path: [...path, tag]
+        });
+      }
+
+      if ((tag === 'td' || tag === 'th') && parentTag !== 'tr') {
+        this.errors.push({
+          type: 'warning',
+          message: `Invalid HTML nesting: A <${tag}> element must sit directly inside a <tr> element (not <${parentTag || 'Fragment'}>).`,
+          path: [...path, tag]
+        });
+      }
+
+      if (tag === 'tr' && parentTag !== 'table' && parentTag !== 'thead' && parentTag !== 'tbody' && parentTag !== 'tfoot') {
+        this.errors.push({
+          type: 'warning',
+          message: `Invalid HTML nesting: A <tr> element must sit directly inside a <table>, <thead>, <tbody>, or <tfoot> (not <${parentTag || 'Fragment'}>).`,
+          path: [...path, tag]
+        });
+      }
+
       // Move deep
       const nextPath = [...path, tag];
       const built = component.build ? component.build() : null;
