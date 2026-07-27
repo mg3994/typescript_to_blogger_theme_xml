@@ -2,6 +2,8 @@ import { Component, DomComponent, Fragment as CoreFragment, Text } from './core.
 
 export const Fragment = CoreFragment;
 
+export * from './types/jsx.js';
+
 /**
  * Normalizes JSX children into an array of Components.
  */
