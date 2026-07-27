@@ -16,12 +16,13 @@ declare global {
 
     type Booleanish = boolean | "true" | "false";
 
-    // Wraps an attribute type to dynamically allow standard Blogger helper attributes (e.g. cond),
-    // children property, and any expression attribute starting with "expr:" (e.g. expr:class, expr:value, etc.)
+    // A general wrapper for Blogger attributes that adds Blogger-specific 'cond',
+    // children support, and dynamic 'expr:' expressions for any attribute.
     type BloggerAttributes<T> = T & {
       children?: any;
       cond?: string;
       [exprAttr: `expr:${string}`]: any;
+      [otherAttr: string]: any;
     };
 
     interface HTMLAttributes {
@@ -51,9 +52,21 @@ declare global {
       cols?: number;
       checked?: boolean;
       selected?: boolean;
+
+      // Blogger conditional rendering attribute on standard HTML tags
+      cond?: string;
+
+      // Enable children for JSX nests
+      children?: any;
+
+      // blogger expression attributes dynamically allowed on any standard HTML element
+      [exprAttr: `expr:${string}`]: any;
+
+      // General fallback attribute indexer
+      [attributeName: string]: any;
     }
 
-    type DetailedHTMLProps<E, T> = BloggerAttributes<E>;
+    type DetailedHTMLProps<E, T> = E;
 
     interface AnchorHTMLAttributes extends HTMLAttributes {
       download?: any;
@@ -253,7 +266,7 @@ declare global {
     }
 
     interface IntrinsicElements {
-      // Standard HTML elements (fully wrapped in BloggerAttributes for expr: prefixes)
+      // Standard HTML elements
       a: DetailedHTMLProps<AnchorHTMLAttributes, HTMLAnchorElement>;
       abbr: DetailedHTMLProps<HTMLAttributes, HTMLElement>;
       address: DetailedHTMLProps<HTMLAttributes, HTMLElement>;
@@ -372,7 +385,7 @@ declare global {
       video: DetailedHTMLProps<VideoHTMLAttributes, HTMLVideoElement>;
       wbr: DetailedHTMLProps<HTMLAttributes, HTMLElement>;
 
-      // Blogger native elements (fully wrapped in BloggerAttributes for expr: prefixes)
+      // Blogger native elements
       'b:section': BloggerAttributes<{ id: string; class?: string; maxwidgets?: number | string; showaddelement?: boolean | string; growth?: string; preferred?: boolean | string }>;
       'b:widget': BloggerAttributes<{ id: string; type: string; title?: string; locked?: boolean | string; pageType?: string; mobile?: string; version?: number | string; visible?: boolean | string }>;
       'b:widget-settings': BloggerAttributes<{}>;
