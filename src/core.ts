@@ -1,15 +1,15 @@
 /**
- * Escapes XML reserved characters in text content and filters XML 1.0 restricted control characters.
+ * Escapes XML reserved characters in text content and filters XML 1.0 restricted control characters (C0 and C1).
  */
 export function escapeXml(text: string): string {
-  return text.replace(/[&<>"']|[\x00-\x08\x0B\x0C\x0E-\x1F]/g, (char) => {
+  return text.replace(/[&<>"']|[\x00-\x08\x0B\x0C\x0E-\x1F\x7F-\x9F]/g, (char) => {
     switch (char) {
       case '&': return '&amp;';
       case '<': return '&lt;';
       case '>': return '&gt;';
       case '"': return '&quot;';
       case "'": return '&apos;';
-      default: return ' '; // restricted control characters (0x00 to 0x1F except 0x09, 0x0A, 0x0D)
+      default: return ' '; // restricted C0 and C1 control characters
     }
   });
 }
