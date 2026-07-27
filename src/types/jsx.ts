@@ -4,6 +4,31 @@ import { Component } from '../core.js';
 // We intentionally avoid declaring a global JSX namespace to prevent conflicts with standard React JSX types
 // when React and blogger-theme are used together in the same workspace.
 export namespace JSX {
+  export type JSXElementConstructor<P> =
+    | ((props: P) => any)
+    | (new (props: P) => Component);
+
+  export interface ReactElement<
+    P = any,
+    T extends string | JSXElementConstructor<any> = string | JSXElementConstructor<any>
+  > {
+    type: T;
+    props: P;
+    key: any;
+  }
+
+  export type ElementType = string | JSXElementConstructor<any>;
+
+  export type ReactNode =
+    | ReactElement<any, any>
+    | Component
+    | string
+    | number
+    | boolean
+    | null
+    | undefined
+    | Iterable<ReactNode>;
+
   export interface Element extends Component {}
   export interface ElementClass {
     props?: any;
