@@ -98,6 +98,17 @@ export class BloggerThemeValidator {
         }
       }
 
+      // Check for invalid use of className on Blogger native namespace elements
+      if (tag.startsWith('b:')) {
+        if ('className' in attributes) {
+          this.errors.push({
+            type: 'error',
+            message: `Invalid Attribute: 'className' is not allowed on Blogger native elements (<${tag}>). You must use 'class' instead.`,
+            path: [...path, tag]
+          });
+        }
+      }
+
       // 2. Validate <b:section> nesting
       if (tag === 'b:section') {
         if (path.includes('b:section')) {

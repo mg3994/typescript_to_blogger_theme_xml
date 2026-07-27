@@ -218,7 +218,8 @@ export class Renderer {
       // It's a DomComponent node
       write(`<${component.tag}`);
       for (const [key, value] of Object.entries(component.attributes)) {
-        write(` ${key}="${escapeXml(value as string)}"`);
+        const renderedKey = key === 'className' ? 'class' : key;
+        write(` ${renderedKey}="${escapeXml(value as string)}"`);
       }
 
       const built = component.build();

@@ -324,4 +324,26 @@ describe('Blogger Structure Validator (Devtool)', () => {
     const warnings = validator.validate(invalidTree);
     expect(warnings.some(w => w.type === 'warning' && w.message.includes('An <li> element must sit directly inside'))).toBe(true);
   });
+
+  it('detects and errors on invalid className inside b: native namespace elements', () => {
+    const invalidTree = (
+      <b:section id="main" className="invalid-prop">
+        <BWidget id="Blog1" type="Blog" />
+      </b:section>
+    );
+    const validator = new BloggerThemeValidator();
+    const errors = validator.validate(invalidTree);
+    expect(errors.some(e => e.type === 'error' && e.message.includes("'className' is not allowed on Blogger native elements"))).toBe(true);
+  });
+
+  it('automatically maps className to class for standard HTML element rendering', () => {
+    const htmlTree = (
+      <div className="react-style-wrapper">
+        <p className="react-para">Text</p>
+      </div>
+    );
+    const xml = htmlTree.render();
+    expect(xml).toContain('<div class="react-style-wrapper">');
+    expect(xml).toContain('<p class="react-para">');
+  });
 });
