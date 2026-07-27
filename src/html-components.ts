@@ -212,7 +212,7 @@ export interface ScriptProps {
   async?: boolean;
   type?: string;
   content?: string;
-  contentInCDATA?: boolean;
+  mode?: "raw" | "cdata" | "escaped";
   children?: any;
 }
 
@@ -231,10 +231,13 @@ export class Script extends DomComponent {
     scriptChildren.push(...children);
 
     if (p.content !== undefined) {
-      if (p.contentInCDATA === true) {
+      const mode = p.mode || "raw";
+      if (mode === "cdata") {
         scriptChildren.push(new RawText(`//<![CDATA[\n${p.content}\n//]]>`));
+      } else if (mode === "escaped") {
+        scriptChildren.push(new Text(p.content, true));
       } else {
-        scriptChildren.push(new Text(p.content));
+        scriptChildren.push(new Text(p.content, false));
       }
     }
 

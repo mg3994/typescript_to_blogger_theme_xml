@@ -193,7 +193,7 @@ describe('Client Script Bundling (BClientScript)', () => {
   it('compiles TypeScript source code to self-invoking IIFE at render time', () => {
     const clientScript = new BClientScript({
       scriptPath: tempFile,
-      contentInCDATA: true,
+      mode: 'cdata',
     });
 
     const rendered = clientScript.render();

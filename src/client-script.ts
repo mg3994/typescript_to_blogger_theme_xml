@@ -5,7 +5,7 @@ import { Component, DomComponent, RawText, Text } from './core.js';
 
 export interface BClientScriptProps {
   scriptPath: string;
-  contentInCDATA?: boolean;
+  mode?: "raw" | "cdata" | "escaped";
 }
 
 /**
@@ -14,20 +14,21 @@ export interface BClientScriptProps {
  */
 export class BClientScript extends Component {
   public scriptPath: string;
-  public contentInCDATA?: boolean;
+  public mode?: "raw" | "cdata" | "escaped";
 
   constructor(props: BClientScriptProps | string) {
     super();
     if (typeof props === 'string') {
       this.scriptPath = props;
+      this.mode = "raw";
     } else {
       this.scriptPath = props.scriptPath;
-      this.contentInCDATA = props.contentInCDATA;
+      this.mode = props.mode || "raw";
     }
   }
 
   override build(): Component[] {
-    return [new CompiledScript(this.scriptPath, this.contentInCDATA)];
+    return [new CompiledScript(this.scriptPath, this.mode)];
   }
 }
 
@@ -35,17 +36,20 @@ export class BClientScript extends Component {
  * Internal helper component that compiles a TypeScript or JavaScript file to an IIFE.
  */
 class CompiledScript extends DomComponent {
-  constructor(public scriptPath: string, public contentInCDATA?: boolean) {
+  constructor(public scriptPath: string, public mode?: "raw" | "cdata" | "escaped") {
     super('script', { type: 'text/javascript' });
   }
 
   override build(): Component[] {
     const jsContent = this._compileToJs();
-    return [
-      this.contentInCDATA === true
-        ? new RawText(`//<![CDATA[\n${jsContent}\n//]]>`)
-        : new Text(jsContent, false) // raw text is safe for JS injection
-    ];
+    if (this.mode === 'cdata') {
+      return [new RawText(`//<![CDATA[\n${jsContent}\n//]]>`)];
+    } else if (this.mode === 'escaped') {
+      return [new Text(jsContent, true)];
+    } else {
+      // default is 'raw'
+      return [new Text(jsContent, false)];
+    }
   }
 
   private _compileToJs(): string {

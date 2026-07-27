@@ -63,7 +63,7 @@ const BlogLayout = () => (
       {/* 2. Embedded on-demand script compilation of React App using BClientScript! */}
       {/* Under the hood, this compiles React, React-DOM, and our App source files,
           bundling them into a single, minified, self-invoking IIFE block. */}
-      <BClientScript scriptPath="./src/index.tsx" contentInCDATA={true} />
+      <BClientScript scriptPath="./src/index.tsx" mode="cdata" />
     </main>
   </div>
 );

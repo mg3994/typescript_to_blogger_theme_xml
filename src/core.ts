@@ -1,33 +1,17 @@
 /**
- * Escapes XML reserved characters in text content.
+ * Escapes XML reserved characters in text content and filters XML 1.0 restricted control characters.
  */
 export function escapeXml(text: string): string {
-  let result = '';
-  for (let i = 0; i < text.length; i++) {
-    const char = text[i];
-    const code = char.charCodeAt(0);
-
-    if (char === '&') {
-      result += '&amp;';
-    } else if (char === '<') {
-      result += '&lt;';
-    } else if (char === '>') {
-      result += '&gt;';
-    } else if (char === '"') {
-      result += '&quot;';
-    } else if (char === "'") {
-      result += '&apos;';
-    } else if (
-      (code >= 0x00 && code <= 0x08) ||
-      (code >= 0x0b && code <= 0x0c) ||
-      (code >= 0x0e && code <= 0x1f)
-    ) {
-      result += ' ';
-    } else {
-      result += char;
+  return text.replace(/[&<>"']|[\x00-\x08\x0B\x0C\x0E-\x1F]/g, (char) => {
+    switch (char) {
+      case '&': return '&amp;';
+      case '<': return '&lt;';
+      case '>': return '&gt;';
+      case '"': return '&quot;';
+      case "'": return '&apos;';
+      default: return ' '; // restricted control characters (0x00 to 0x1F except 0x09, 0x0A, 0x0D)
     }
-  }
-  return result;
+  });
 }
 
 /**
