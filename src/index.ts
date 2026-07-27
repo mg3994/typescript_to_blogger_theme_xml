@@ -1,3 +1,5 @@
+import './types/jsx.js';
+
 export {
   escapeXml,
   Component,

@@ -43,6 +43,20 @@ declare global {
       cols?: number;
       checked?: boolean;
       selected?: boolean;
+
+      // Blogger expression attributes (expr:)
+      "expr:id"?: string;
+      "expr:class"?: string;
+      "expr:className"?: string;
+      "expr:href"?: string;
+      "expr:src"?: string;
+      "expr:title"?: string;
+      "expr:alt"?: string;
+      "expr:value"?: string;
+      "expr:style"?: string;
+      "expr:disabled"?: string;
+      "expr:checked"?: string;
+
       [attributeName: string]: any;
     }
 
