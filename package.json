@@ -1,5 +1,5 @@
 {
-  "name": "blogger-theme",
+  "name": "@antinna/blogger-theme",
   "version": "1.0.0",
   "description": "A lightweight TypeScript/ESNext library for generating Blogger theme XML using a clean, declarative component API with TSX support.",
   "type": "module",
@@ -7,6 +7,21 @@
   "types": "./dist/index.d.ts",
   "bin": {
     "blogger-theme": "./dist/cli.js"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Antinna/blogger-theme.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Antinna/blogger-theme/issues"
+  },
+  "homepage": "https://github.com/Antinna/blogger-theme#readme",
+  "funding": {
+    "type": "github",
+    "url": "https://github.com/sponsors/Manishmg3994"
   },
   "exports": {
     ".": {

@@ -1,8 +1,6 @@
-# 🚀 blogger-theme (TypeScript)
+# 🚀 @antinna/blogger-theme (TypeScript)
 
 A lightweight TypeScript & ESNext library for generating Blogger (Blogspot) theme XML using a clean, declarative component API with full TSX/JSX and Builder support.
-
-Inspired by the Dart library `blogger_theme`, this package enables writing highly modular, extensible Blogger themes with TypeScript.
 
 ---
 
@@ -20,7 +18,7 @@ Inspired by the Dart library `blogger_theme`, this package enables writing highl
 ## Installation
 
 ```bash
-npm install blogger-theme
+npm install @antinna/blogger-theme
 ```
 
 Make sure you have `esbuild` installed (which is a peer dependency used for on-demand script compilation).
@@ -38,7 +36,7 @@ To use TSX/JSX syntax in your project, configure your `tsconfig.json` with the a
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
     "jsx": "react-jsx",
-    "jsxImportSource": "blogger-theme",
+    "jsxImportSource": "@antinna/blogger-theme",
     "strict": true
   }
 }
@@ -51,7 +49,8 @@ To use TSX/JSX syntax in your project, configure your `tsconfig.json` with the a
 ### 1. Define your Layout Component (TSX Style)
 
 ```tsx
-import { BSection, BWidget, BIf, BData } from 'blogger-theme';
+/** @jsxImportSource @antinna/blogger-theme */
+import { BSection, BWidget, BIf, BData } from '@antinna/blogger-theme';
 
 export const BlogLayout = () => (
   <div class="wrapper-pane">
@@ -71,7 +70,8 @@ export const BlogLayout = () => (
 ### 2. Generate Blogger Theme XML
 
 ```tsx
-import { BloggerTheme, Title, BSkin } from 'blogger-theme';
+/** @jsxImportSource @antinna/blogger-theme */
+import { BloggerTheme, Title, BSkin } from '@antinna/blogger-theme';
 import { BlogLayout } from './BlogLayout.js';
 
 const theme = new BloggerTheme({
@@ -101,10 +101,10 @@ This library has been meticulously designed to support **both** styles natively.
 
 ### Constructor/Builder Style
 
-If you prefer class-based instantiation matching the original Dart package:
+If you prefer class-based instantiation:
 
 ```typescript
-import { BSection, BWidget, BIf, Div, BData } from 'blogger-theme';
+import { BSection, BWidget, BIf, Div, BData } from '@antinna/blogger-theme';
 
 const layout = new Div({ class: 'wrapper-pane' },
   new BSection({
@@ -137,7 +137,7 @@ const xml = layout.render();
 You can compile a client-side TypeScript or JavaScript file at render-time. This code will be bundled, minified, wrapped inside a self-invoking IIFE, and output directly inside the rendered theme XML's `<script>` tag.
 
 ```tsx
-import { BClientScript } from 'blogger-theme';
+import { BClientScript } from '@antinna/blogger-theme';
 
 // Inside your layout/head:
 <BClientScript scriptPath="./src/client/analytics.ts" contentInCDATA={true} />
@@ -145,34 +145,19 @@ import { BClientScript } from 'blogger-theme';
 
 ---
 
-## API Overview
+## CLI Compilation (`blogger-theme`)
 
-### Core building blocks
+You can compile any `.tsx` entrypoint directly to XML using our built-in compiler tool:
 
-- `Component`: Abstract base class for all nodes. Includes direct `.render()` method.
-- `DomComponent`: Standard element with custom tag, attributes, and children.
-- `Text`: Normal text node (XML escaped by default).
-- `RawText`: Raw text node (disables XML escaping).
-- `Fragment`: Group components without adding a parent tag.
-- `Renderer`: Compiles component trees into XML strings.
+```bash
+npx blogger-theme theme.tsx -o theme.xml
+```
 
-### Blogger-specific components
+You can also run it in **watch mode** to automatically compile layouts as you save changes during development:
 
-- `BSection`, `BWidget`, `BWidgetSettings`, `BWidgetSetting`
-- `BIf`, `BElseIf`, `BElse`
-- `BLoop`, `BData`, `BArg`, `BAttr`, `BClass`
-- `BInclude`, `BIncludable`, `BTag`, `BEval`
-- `BSkin`, `BVariable`, `BGroup`
-- `BComment`, `XmlComment`, `BTemplateSkin`, `BTemplateScript`, `BParam`
-- `BDefaultMarkup`, `BDefaultMarkups`
-
-### HTML helper components
-
-- `Html`, `Head`, `Body`, `Title`, `Meta`, `Link`, `Base`
-- `Div`, `Span`, `P`, `Form`, `Input`, `Button`, `Img`, `Br`, `Hr`
-- `Header`, `Footer`, `Main`, `Nav`, `Section`, `Article`, `Aside`
-- `H1`, `H2`, `H3`, `H4`, `H5`, `H6`
-- `Ul`, `Li`, `A`, `Label`, `Select`, `Option`, `Script`
+```bash
+npx blogger-theme theme.tsx -o theme.xml --watch
+```
 
 ---
 

@@ -12,11 +12,11 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "jsx": "react-jsx",
-    "jsxImportSource": "blogger-theme",
+    "jsxImportSource": "@antinna/blogger-theme",
     "baseUrl": ".",
     "paths": {
-      "blogger-theme": ["./src/index.ts"],
-      "blogger-theme/*": ["./src/*"]
+      "@antinna/blogger-theme": ["./src/index.ts"],
+      "@antinna/blogger-theme/*": ["./src/*"]
     }
   },
   "include": ["src/**/*"]

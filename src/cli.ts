@@ -46,7 +46,7 @@ async function compile(entryPath: string, outputPath?: string) {
       format: 'esm',
       target: 'node18',
       outfile: tempOut,
-      external: ['esbuild', 'vitest', 'blogger-theme'],
+      external: ['esbuild', 'vitest', '@antinna/blogger-theme'],
       logLevel: 'silent',
     });
 

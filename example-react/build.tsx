@@ -1,4 +1,4 @@
-/** @jsxImportSource blogger-theme */
+/** @jsxImportSource @antinna/blogger-theme */
 import * as fs from 'fs';
 import * as path from 'path';
 import {
@@ -15,7 +15,7 @@ import {
   BData,
   Expr,
   Data
-} from 'blogger-theme';
+} from '@antinna/blogger-theme';
 
 // Define a modular layout component using TSX (Declarative JSX style)
 // Note: our generalized types support standard lowercase tags like div, span, etc.
