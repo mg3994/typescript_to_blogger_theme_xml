@@ -16,6 +16,14 @@ declare global {
 
     type Booleanish = boolean | "true" | "false";
 
+    // Wraps an attribute type to dynamically allow standard Blogger helper attributes (e.g. cond),
+    // children property, and any expression attribute starting with "expr:" (e.g. expr:class, expr:value, etc.)
+    type BloggerAttributes<T> = T & {
+      children?: any;
+      cond?: string;
+      [exprAttr: `expr:${string}`]: any;
+    };
+
     interface HTMLAttributes {
       id?: string;
       class?: string;
@@ -43,24 +51,9 @@ declare global {
       cols?: number;
       checked?: boolean;
       selected?: boolean;
-
-      // Blogger expression attributes (expr:)
-      "expr:id"?: string;
-      "expr:class"?: string;
-      "expr:className"?: string;
-      "expr:href"?: string;
-      "expr:src"?: string;
-      "expr:title"?: string;
-      "expr:alt"?: string;
-      "expr:value"?: string;
-      "expr:style"?: string;
-      "expr:disabled"?: string;
-      "expr:checked"?: string;
-
-      [attributeName: string]: any;
     }
 
-    type DetailedHTMLProps<E, T> = E;
+    type DetailedHTMLProps<E, T> = BloggerAttributes<E>;
 
     interface AnchorHTMLAttributes extends HTMLAttributes {
       download?: any;
@@ -260,7 +253,7 @@ declare global {
     }
 
     interface IntrinsicElements {
-      // Standard HTML element with detailed React-like types
+      // Standard HTML elements (fully wrapped in BloggerAttributes for expr: prefixes)
       a: DetailedHTMLProps<AnchorHTMLAttributes, HTMLAnchorElement>;
       abbr: DetailedHTMLProps<HTMLAttributes, HTMLElement>;
       address: DetailedHTMLProps<HTMLAttributes, HTMLElement>;
@@ -379,32 +372,32 @@ declare global {
       video: DetailedHTMLProps<VideoHTMLAttributes, HTMLVideoElement>;
       wbr: DetailedHTMLProps<HTMLAttributes, HTMLElement>;
 
-      // Blogger native elements
-      'b:section': HTMLAttributes & { id: string; class?: string; maxwidgets?: number | string; showaddelement?: boolean | string; growth?: string; preferred?: boolean | string };
-      'b:widget': HTMLAttributes & { id: string; type: string; title?: string; locked?: boolean | string; pageType?: string; mobile?: string; version?: number | string; visible?: boolean | string };
-      'b:widget-settings': HTMLAttributes;
-      'b:widget-setting': HTMLAttributes & { name: string };
-      'b:if': HTMLAttributes & { cond: string };
-      'b:elseif': HTMLAttributes & { cond: string };
-      'b:else': HTMLAttributes;
-      'b:loop': HTMLAttributes & { values: string; var: string; index?: string };
-      'b:include': HTMLAttributes & { name: string; data?: string; cond?: string };
-      'b:includable': HTMLAttributes & { id: string; var?: string };
-      'b:attr': HTMLAttributes & { name: string; value: string; 'expr:value'?: string; cond?: string };
-      'b:class': HTMLAttributes & { name: string; cond: string };
-      'b:tag': HTMLAttributes & { name?: string; cond?: string };
-      'b:eval': HTMLAttributes & { expr: string };
-      'b:with': HTMLAttributes & { var: string; value: string };
-      'b:switch': HTMLAttributes & { var: string };
-      'b:case': HTMLAttributes & { value: string };
-      'b:default': HTMLAttributes;
-      'b:message': HTMLAttributes & { name: string };
-      'b:comment': HTMLAttributes;
-      'b:template-skin': HTMLAttributes;
-      'b:template-script': HTMLAttributes & { name: string; version: string; async?: boolean | string };
-      'b:param': HTMLAttributes & { value?: string; 'expr:value'?: string };
-      'b:defaultmarkup': HTMLAttributes & { type: string };
-      'b:defaultmarkups': HTMLAttributes;
+      // Blogger native elements (fully wrapped in BloggerAttributes for expr: prefixes)
+      'b:section': BloggerAttributes<{ id: string; class?: string; maxwidgets?: number | string; showaddelement?: boolean | string; growth?: string; preferred?: boolean | string }>;
+      'b:widget': BloggerAttributes<{ id: string; type: string; title?: string; locked?: boolean | string; pageType?: string; mobile?: string; version?: number | string; visible?: boolean | string }>;
+      'b:widget-settings': BloggerAttributes<{}>;
+      'b:widget-setting': BloggerAttributes<{ name: string }>;
+      'b:if': BloggerAttributes<{ cond: string }>;
+      'b:elseif': BloggerAttributes<{ cond: string }>;
+      'b:else': BloggerAttributes<{}>;
+      'b:loop': BloggerAttributes<{ values: string; var: string; index?: string }>;
+      'b:include': BloggerAttributes<{ name: string; data?: string; cond?: string }>;
+      'b:includable': BloggerAttributes<{ id: string; var?: string }>;
+      'b:attr': BloggerAttributes<{ name: string; value: string; 'expr:value'?: string; cond?: string }>;
+      'b:class': BloggerAttributes<{ name: string; cond: string }>;
+      'b:tag': BloggerAttributes<{ name?: string; cond?: string }>;
+      'b:eval': BloggerAttributes<{ expr: string }>;
+      'b:with': BloggerAttributes<{ var: string; value: string }>;
+      'b:switch': BloggerAttributes<{ var: string }>;
+      'b:case': BloggerAttributes<{ value: string }>;
+      'b:default': BloggerAttributes<{}>;
+      'b:message': BloggerAttributes<{ name: string }>;
+      'b:comment': BloggerAttributes<{}>;
+      'b:template-skin': BloggerAttributes<{}>;
+      'b:template-script': BloggerAttributes<{ name: string; version: string; async?: boolean | string }>;
+      'b:param': BloggerAttributes<{ value?: string; 'expr:value'?: string }>;
+      'b:defaultmarkup': BloggerAttributes<{ type: string }>;
+      'b:defaultmarkups': BloggerAttributes<{}>;
 
       // Dynamic tags fallback
       [elemName: string]: any;
