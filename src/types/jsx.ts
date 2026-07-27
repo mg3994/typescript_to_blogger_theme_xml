@@ -604,12 +604,12 @@ declare global {
       iframe: DetailedHTMLProps<IframeHTMLAttributes<HTMLIFrameElement>, HTMLIFrameElement>;
       img: DetailedHTMLProps<ImgHTMLAttributes<HTMLImageElement>, HTMLImageElement>;
       input: DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>;
-      ins: DetailedHTMLProps<InsHTMLAttributes<HTMLModElement>, HTMLModElement>;
+      ins: DetailedHTMLProps<HTMLAttributes<HTMLModElement>, HTMLModElement>;
       kbd: DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement>;
       keygen: DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement>;
       label: DetailedHTMLProps<LabelHTMLAttributes<HTMLLabelElement>, HTMLLabelElement>;
       legend: DetailedHTMLProps<HTMLAttributes<HTMLLegendElement>, HTMLLegendElement>;
-      li: DetailedHTMLProps<LiHTMLAttributes<HTMLLIElement>, HTMLLIElement>;
+      li: DetailedHTMLProps<HTMLAttributes<HTMLLIElement>, HTMLLIElement>;
       link: DetailedHTMLProps<LinkHTMLAttributes<HTMLLinkElement>, HTMLLinkElement>;
       main: DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement>;
       map: DetailedHTMLProps<MapHTMLAttributes<HTMLMapElement>, HTMLMapElement>;
@@ -670,7 +670,7 @@ declare global {
       // SVG
       svg: BloggerAttributes<SVGAttributes<SVGSVGElement>>;
 
-      // Blogger native elements (fully wrapped in BloggerAttributes for expr: prefixes)
+      // Blogger native elements (wrapped in BloggerAttributes to dynamically support expression versions as well)
       'b:section': BloggerAttributes<{ id: string; class?: string; maxwidgets?: number | string; showaddelement?: boolean | string; growth?: string; preferred?: boolean | string }>;
       'b:widget': BloggerAttributes<{ id: string; type: string; title?: string; locked?: boolean | string; pageType?: string; mobile?: string; version?: number | string; visible?: boolean | string }>;
       'b:widget-settings': BloggerAttributes<{}>;
@@ -681,7 +681,7 @@ declare global {
       'b:loop': BloggerAttributes<{ values: string; var: string; index?: string }>;
       'b:include': BloggerAttributes<{ name: string; data?: string; cond?: string }>;
       'b:includable': BloggerAttributes<{ id: string; var?: string }>;
-      'b:attr': BloggerAttributes<{ name: string; value: string; 'expr:value'?: string; cond?: string }>;
+      'b:attr': BloggerAttributes<{ name: string; value: string; cond?: string }>;
       'b:class': BloggerAttributes<{ name: string; cond: string }>;
       'b:tag': BloggerAttributes<{ name?: string; cond?: string }>;
       'b:eval': BloggerAttributes<{ expr: string }>;
@@ -693,7 +693,7 @@ declare global {
       'b:comment': BloggerAttributes<{}>;
       'b:template-skin': BloggerAttributes<{}>;
       'b:template-script': BloggerAttributes<{ name: string; version: string; async?: boolean | string }>;
-      'b:param': BloggerAttributes<{ value?: string; 'expr:value'?: string }>;
+      'b:param': BloggerAttributes<{ value?: string }>;
       'b:defaultmarkup': BloggerAttributes<{ type: string }>;
       'b:defaultmarkups': BloggerAttributes<{}>;
 
@@ -1326,7 +1326,7 @@ export namespace JSX {
     ol: DetailedHTMLProps<OlHTMLAttributes<HTMLOListElement>, HTMLOListElement>;
     optgroup: DetailedHTMLProps<OptgroupHTMLAttributes<HTMLOptGroupElement>, HTMLOptGroupElement>;
     option: DetailedHTMLProps<OptionHTMLAttributes<HTMLOptionElement>, HTMLOptionElement>;
-    output: DetailedHTMLProps<OutputHTMLAttributes<HTMLOutputElement>, HTMLOutputElement>;
+    output: DetailedHTMLProps<HTMLAttributes<HTMLOutputElement>, HTMLOutputElement>;
     p: DetailedHTMLProps<HTMLAttributes<HTMLParagraphElement>, HTMLParagraphElement>;
     param: DetailedHTMLProps<ParamHTMLAttributes<HTMLParamElement>, HTMLParamElement>;
     picture: DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement>;
@@ -1362,7 +1362,7 @@ export namespace JSX {
     time: DetailedHTMLProps<TimeHTMLAttributes<HTMLTimeElement>, HTMLTimeElement>;
     title: DetailedHTMLProps<HTMLAttributes<HTMLTitleElement>, HTMLTitleElement>;
     tr: DetailedHTMLProps<HTMLAttributes<HTMLTableRowElement>, HTMLTableRowElement>;
-    track: DetailedHTMLProps<TrackHTMLAttributes<HTMLTrackElement>, HTMLTrackElement>;
+    track: DetailedHTMLProps<HTMLAttributes<HTMLTrackElement>, HTMLTrackElement>;
     u: DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement>;
     ul: DetailedHTMLProps<HTMLAttributes<HTMLUListElement>, HTMLUListElement>;
     var: DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement>;
@@ -1383,7 +1383,7 @@ export namespace JSX {
     'b:loop': BloggerAttributes<{ values: string; var: string; index?: string }>;
     'b:include': BloggerAttributes<{ name: string; data?: string; cond?: string }>;
     'b:includable': BloggerAttributes<{ id: string; var?: string }>;
-    'b:attr': BloggerAttributes<{ name: string; value: string; 'expr:value'?: string; cond?: string }>;
+    'b:attr': BloggerAttributes<{ name: string; value: string; cond?: string }>;
     'b:class': BloggerAttributes<{ name: string; cond: string }>;
     'b:tag': BloggerAttributes<{ name?: string; cond?: string }>;
     'b:eval': BloggerAttributes<{ expr: string }>;
@@ -1395,7 +1395,7 @@ export namespace JSX {
     'b:comment': BloggerAttributes<{}>;
     'b:template-skin': BloggerAttributes<{}>;
     'b:template-script': BloggerAttributes<{ name: string; version: string; async?: boolean | string }>;
-    'b:param': BloggerAttributes<{ value?: string; 'expr:value'?: string }>;
+    'b:param': BloggerAttributes<{ value?: string }>;
     'b:defaultmarkup': BloggerAttributes<{ type: string }>;
     'b:defaultmarkups': BloggerAttributes<{}>;
 
