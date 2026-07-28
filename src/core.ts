@@ -316,3 +316,20 @@ export class Renderer {
     }
   }
 }
+
+/**
+ * Minifies the rendered XML document by collapsing extraneous spaces and tabs,
+ * while safely preserving CDATA blocks intact.
+ */
+export function minifyXml(xml: string): string {
+  const parts = xml.split(/(<!\[CDATA\[[\s\S]*?\]\]>)/g);
+  for (let i = 0; i < parts.length; i++) {
+    if (!parts[i].startsWith('<![CDATA[')) {
+      parts[i] = parts[i]
+        .replace(/>\s+</g, '><')
+        .replace(/\s{2,}/g, ' ')
+        .trim();
+    }
+  }
+  return parts.join('');
+}

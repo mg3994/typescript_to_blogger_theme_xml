@@ -1,4 +1,4 @@
-import { Component, Renderer } from './core.js';
+import { Component, Renderer, minifyXml } from './core.js';
 import { Html, Head, Body } from './html-components.js';
 import { BloggerThemeValidator } from './devtool.js';
 
@@ -38,12 +38,16 @@ export class BloggerTheme extends Component {
   /**
    * Renders this theme to a full Blogger-compatible XML document.
    */
-  generate(): string {
+  generate(options?: { minify?: boolean }): string {
     // Run structure validation to provide helpful devtool diagnostics and redline logs.
     const validator = new BloggerThemeValidator();
     validator.checkAndReport(this, false); // log redlines on the console
 
     const renderer = new Renderer();
-    return '<?xml version="1.0" encoding="UTF-8" ?>\n' + renderer.render(this);
+    let xml = '<?xml version="1.0" encoding="UTF-8" ?>\n' + renderer.render(this);
+    if (options?.minify) {
+      xml = minifyXml(xml);
+    }
+    return xml;
   }
 }

@@ -18,11 +18,12 @@ Usage:
 Options:
   -o, --out <file>   Specify the output XML file path (defaults to stdout)
   -w, --watch        Watch entrypoint and imported files for changes and recompile
+  -m, --minify       Minify the compiled Blogger XML output
   -h, --help         Show this help message
   `);
 }
 
-async function compile(entryPath: string, outputPath?: string) {
+async function compile(entryPath: string, outputPath?: string, minify?: boolean) {
   const absoluteEntry = path.resolve(entryPath);
   if (!fs.existsSync(absoluteEntry)) {
     console.error(`❌ Error: Entrypoint file not found at "${absoluteEntry}"`);
@@ -82,7 +83,7 @@ async function compile(entryPath: string, outputPath?: string) {
 
     let xml: string;
     if (typeof theme.generate === 'function') {
-      xml = theme.generate();
+      xml = theme.generate({ minify });
     } else if (typeof theme.render === 'function') {
       xml = '<?xml version="1.0" encoding="UTF-8" ?>\n' + theme.render();
     } else {
@@ -136,10 +137,11 @@ async function main() {
   }
 
   const isWatch = args.includes('-w') || args.includes('--watch');
+  const isMinify = args.includes('-m') || args.includes('--minify');
 
   if (isWatch) {
     console.log(`👀 Watch mode enabled. Watching for changes...`);
-    await compile(entryPath, outputPath);
+    await compile(entryPath, outputPath, isMinify);
 
     const absoluteEntryDir = path.dirname(path.resolve(entryPath));
     let timeout: NodeJS.Timeout | null = null;
@@ -156,12 +158,12 @@ async function main() {
 
         timeout = setTimeout(async () => {
           console.log(`🔄 Change detected in "${filename}". Recompiling...`);
-          await compile(entryPath, outputPath);
+          await compile(entryPath, outputPath, isMinify);
         }, 100);
       }
     });
   } else {
-    await compile(entryPath, outputPath);
+    await compile(entryPath, outputPath, isMinify);
   }
 }
 

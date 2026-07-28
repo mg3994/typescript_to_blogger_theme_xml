@@ -402,4 +402,27 @@ describe('Blogger Structure Validator (Devtool)', () => {
     expect(xml).toContain('<form novalidate="true" tabindex="1">');
     expect(xml).toContain('<input type="text" readonly="true" maxlength="20" autofocus="true"/>');
   });
+
+  it('minifies HTML/XML output correctly while preserving CDATA blocks intact', () => {
+    const theme = new BloggerTheme({
+      attributes: {},
+      head: [
+        <title>   Spacing   Test   </title>,
+        <BSkin css="body { margin:   0; }" />
+      ],
+      body: [
+        <div>
+          <span>  Inside  </span>
+        </div>
+      ]
+    });
+
+    const minifiedXml = theme.generate({ minify: true });
+    // Expect whitespace between tags to be collapsed
+    expect(minifiedXml).toContain('<head><title> Spacing Test </title><!-- prettier-ignore --><b:skin>');
+    // Expect body elements to be completely collapsed between tags
+    expect(minifiedXml).toContain('</b:skin></head><body><div><span> Inside </span></div></body></html>');
+    // Expect CDATA block inside skin to preserve spaces and format
+    expect(minifiedXml).toContain('body { margin:   0; }');
+  });
 });
