@@ -32,6 +32,10 @@ export namespace JSX {
   export interface Element extends Component {}
   export interface ElementClass {
     props?: any;
+    state?: any;
+    context?: any;
+    setState?(state: any, callback?: () => void): void;
+    forceUpdate?(callback?: () => void): void;
   }
 
   export interface ElementAttributesProperty {

@@ -37,6 +37,10 @@ export function escapeXml(text: string): string {
  */
 export abstract class Component {
   public props?: any;
+  public state?: any;
+  public context?: any;
+  public setState?(state: any, callback?: () => void): void;
+  public forceUpdate?(callback?: () => void): void;
 
   abstract build(): Iterable<Component> | Component | null | void;
 
