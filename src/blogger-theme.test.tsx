@@ -113,8 +113,8 @@ describe('Expr & Data Helpers', () => {
   });
 
   it('Feeds helpers generate correct feed URLs', () => {
-    expect(Feeds.posts({ maxResults: 5, label: 'featured' })).toBe('data:blog.homepageUrlfeeds/posts/default/-/featured?max-results=5');
-    expect(Feeds.summary({ maxResults: 3 })).toBe('data:blog.homepageUrlfeeds/summary?max-results=3');
+    expect(Feeds.posts({ maxResults: 5, label: 'featured' })).toBe('data:blog.homepageUrl/feeds/posts/default/-/featured?max-results=5');
+    expect(Feeds.summary({ maxResults: 3 })).toBe('data:blog.homepageUrl/feeds/summary?max-results=3');
   });
 });
 

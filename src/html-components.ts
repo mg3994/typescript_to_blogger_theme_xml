@@ -430,7 +430,7 @@ export class Feeds {
       params.push(`alt=${options.alt}`);
     }
     const query = params.length > 0 ? `?${params.join('&')}` : '';
-    return `${Data.blogHomepageUrl}${path}${query}`;
+    return `${Data.blogHomepageUrl}/${path}${query}`;
   }
 
   static summary(options?: { maxResults?: number; alt?: string }): string {
@@ -442,6 +442,6 @@ export class Feeds {
       params.push(`alt=${options.alt}`);
     }
     const query = params.length > 0 ? `?${params.join('&')}` : '';
-    return `${Data.blogHomepageUrl}feeds/summary${query}`;
+    return `${Data.blogHomepageUrl}/feeds/summary${query}`;
   }
 }
