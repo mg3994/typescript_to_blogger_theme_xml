@@ -1,7 +1,7 @@
 {
   "name": "@antinna/blogger-theme",
-  "version": "1.0.0",
-  "description": "A lightweight TypeScript/ESNext library for generating Blogger theme XML using a clean, declarative component API with TSX support.",
+  "version": "2.0.0",
+  "description": "A lightweight modern React-first library for generating Blogger theme XML from standard React component trees.",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -19,34 +19,25 @@
     "url": "https://github.com/Antinna/blogger-theme/issues"
   },
   "homepage": "https://github.com/Antinna/blogger-theme#readme",
-  "funding": {
-    "type": "github",
-    "url": "https://github.com/sponsors/Manishmg3994"
-  },
   "exports": {
     ".": {
       "import": "./dist/index.js",
       "types": "./dist/index.d.ts"
-    },
-    "./jsx-runtime": {
-      "import": "./dist/jsx-runtime.js",
-      "types": "./dist/jsx-runtime.d.ts"
-    },
-    "./jsx-dev-runtime": {
-      "import": "./dist/jsx-dev-runtime.js",
-      "types": "./dist/jsx-dev-runtime.d.ts"
     }
   },
   "scripts": {
     "build": "tsc",
-    "test": "vitest run",
-    "test:watch": "vitest"
+    "test": "vitest run"
   },
   "dependencies": {
-    "esbuild": "^0.24.0"
+    "esbuild": "^0.24.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
   },
   "devDependencies": {
     "@types/node": "^22.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
     "typescript": "^5.3.0",
     "vitest": "^1.4.0"
   },
@@ -56,10 +47,9 @@
     "theme",
     "template",
     "xml",
-    "tsx",
+    "react",
     "jsx",
     "typescript"
   ],
-  "author": "",
   "license": "MIT"
 }

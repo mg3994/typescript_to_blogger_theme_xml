@@ -1,53 +1,46 @@
-import { Component, Renderer, minifyXml } from './core.js';
+import React from 'react';
 import { Html, Head, Body } from './html-components.js';
 import { BloggerThemeValidator } from './devtool.js';
+import { renderToBloggerTheme } from './core.js';
 
 export interface BloggerThemeProps {
-  head: Iterable<Component>;
-  body: Iterable<Component>;
+  head: React.ReactNode;
+  body: React.ReactNode;
   attributes?: Record<string, string>;
 }
 
 /**
- * Builds a complete Blogger theme document from head and body components.
- * Use [generate] to render the theme as a full XML string with the required
- * Blogger template XML declaration.
+ * Builds a complete Blogger theme XML document from standard React components.
+ * Use [generate] to render the theme as a full Blogger-compatible XML string.
  */
-export class BloggerTheme extends Component {
-  public head: Iterable<Component>;
-  public body: Iterable<Component>;
+export class BloggerTheme {
+  public head: React.ReactNode;
+  public body: React.ReactNode;
   public attributes?: Record<string, string>;
 
   constructor(props: BloggerThemeProps) {
-    super();
     this.head = props.head;
     this.body = props.body;
     this.attributes = props.attributes;
-  }
-
-  override build(): Component[] {
-    return [
-      new Html(
-        this.attributes ? { attributes: this.attributes } : null,
-        new Head(null, ...this.head),
-        new Body(null, ...this.body)
-      )
-    ];
   }
 
   /**
    * Renders this theme to a full Blogger-compatible XML document.
    */
   generate(options?: { minify?: boolean }): string {
-    // Run structure validation to provide helpful devtool diagnostics and redline logs.
-    const validator = new BloggerThemeValidator();
-    validator.checkAndReport(this, false); // log redlines on the console
+    const rootElement = React.createElement(Html, { attributes: this.attributes },
+      React.createElement(Head, null, this.head),
+      React.createElement(Body, null, this.body)
+    );
 
-    const renderer = new Renderer();
-    let xml = '<?xml version="1.0" encoding="UTF-8" ?>\n' + renderer.render(this);
-    if (options?.minify) {
-      xml = minifyXml(xml);
+    // Run structural diagnostics/devtool validation on the compiled component/theme
+    try {
+      const validator = new BloggerThemeValidator();
+      validator.checkAndReport(rootElement, false);
+    } catch (e) {
+      // ignore validation reporting failures
     }
-    return xml;
+
+    return renderToBloggerTheme(rootElement, options);
   }
 }

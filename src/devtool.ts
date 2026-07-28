@@ -1,4 +1,4 @@
-import { Component, DomComponent } from './core.js';
+import React from 'react';
 
 export interface ValidationError {
   type: 'error' | 'warning';
@@ -7,7 +7,7 @@ export interface ValidationError {
 }
 
 /**
- * BloggerThemeValidator analyzes a Component tree to ensure it conforms to Blogger's strict layout rules.
+ * BloggerThemeValidator analyzes a React Element tree to ensure it conforms to Blogger's strict layout rules.
  * It detects nesting violations, incorrect tag placements, missing required attributes, and duplicate IDs.
  */
 export class BloggerThemeValidator {
@@ -15,14 +15,14 @@ export class BloggerThemeValidator {
   private seenIds = new Set<string>();
 
   private invalidSectionContainers = new Set([
-    'p', 'span', 'a', 'b:widget', 'b:includable', 'b:include', 'b:if', 'b:loop', 'b:attr',
+    'p', 'span', 'a', 'b:widget', 'BWidget', 'b:includable', 'BIncludable', 'b:include', 'BInclude', 'b:if', 'BIf', 'b:loop', 'BLoop', 'b:attr', 'BAttr',
     'section', 'article', 'aside', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'button', 'input', 'ul', 'ol', 'li'
   ]);
 
   /**
-   * Validates a component tree and returns any encountered errors or warnings.
+   * Validates a React element tree and returns any encountered errors or warnings.
    */
-  public validate(root: Component): ValidationError[] {
+  public validate(root: React.ReactNode): ValidationError[] {
     this.errors = [];
     this.seenIds.clear();
     this._traverse(root, []);
@@ -33,7 +33,7 @@ export class BloggerThemeValidator {
    * Validates and prints any structural issues in a beautiful, styled format.
    * If errors are found and throwOnError is true, it throws an error.
    */
-  public checkAndReport(root: Component, throwOnError: boolean = false): void {
+  public checkAndReport(root: React.ReactNode, throwOnError: boolean = false): void {
     const issues = this.validate(root);
     if (issues.length === 0) {
       return;
@@ -68,17 +68,32 @@ export class BloggerThemeValidator {
     }
   }
 
-  private _traverse(component: any, path: string[]): void {
-    if (!component) return;
+  private _traverse(element: any, path: string[]): void {
+    if (!element) return;
 
-    if (component instanceof DomComponent || (component && typeof component.tag === 'string')) {
-      const tag = component.tag;
-      const attributes = component.attributes || {};
+    if (Array.isArray(element)) {
+      for (const child of element) {
+        this._traverse(child, path);
+      }
+      return;
+    }
+
+    if (typeof element === 'object' && 'type' in element) {
+      let tag = '';
+      if (typeof element.type === 'string') {
+        tag = element.type;
+      } else if (typeof element.type === 'function' || typeof element.type === 'object') {
+        tag = element.type.name || element.type.displayName || 'Component';
+      } else {
+        tag = 'Unknown';
+      }
+
+      const props = element.props || {};
       const parentTag = path[path.length - 1];
 
       // 1. Check Unique ID rules
-      if (tag === 'b:widget' || tag === 'b:section') {
-        const id = attributes['id'];
+      if (tag === 'b:widget' || tag === 'b:section' || tag === 'BWidget' || tag === 'BSection') {
+        const id = props['id'];
         if (!id) {
           this.errors.push({
             type: 'error',
@@ -99,8 +114,10 @@ export class BloggerThemeValidator {
       }
 
       // Check for invalid use of className on Blogger native namespace elements
-      if (tag.startsWith('b:')) {
-        if ('className' in attributes) {
+      if (tag.startsWith('b:') || tag.startsWith('B')) {
+        // Only trigger on actual Blogger tags (not core HTML components)
+        const isBloggerTag = tag.startsWith('b:') || ['BSection', 'BWidget', 'BIf', 'BElseIf', 'BElse', 'BLoop', 'BIncludable', 'BInclude'].includes(tag);
+        if (isBloggerTag && 'className' in props) {
           this.errors.push({
             type: 'error',
             message: `Invalid Attribute: 'className' is not allowed on Blogger native elements (<${tag}>). You must use 'class' instead.`,
@@ -110,8 +127,8 @@ export class BloggerThemeValidator {
       }
 
       // 2. Validate <b:section> nesting
-      if (tag === 'b:section') {
-        if (path.includes('b:section')) {
+      if (tag === 'b:section' || tag === 'BSection') {
+        if (path.includes('b:section') || path.includes('BSection')) {
           this.errors.push({
             type: 'error',
             message: 'Invalid nesting: You cannot nest a <b:section> inside another <b:section>.',
@@ -133,8 +150,8 @@ export class BloggerThemeValidator {
       }
 
       // 3. Validate <b:widget> rules
-      if (tag === 'b:widget') {
-        if (parentTag !== 'b:section') {
+      if (tag === 'b:widget' || tag === 'BWidget') {
+        if (parentTag !== 'b:section' && parentTag !== 'BSection') {
           this.errors.push({
             type: 'error',
             message: `<b:widget> elements must sit directly inside a <b:section>. They cannot contain other widgets, and cannot be nested inside <${parentTag || 'Fragment'}>.`,
@@ -144,8 +161,8 @@ export class BloggerThemeValidator {
       }
 
       // 4. Validate children inside <b:widget>
-      if (parentTag === 'b:widget') {
-        if (tag !== 'b:includable' && tag !== 'b:widget-settings') {
+      if (parentTag === 'b:widget' || parentTag === 'BWidget') {
+        if (tag !== 'b:includable' && tag !== 'BIncludable' && tag !== 'b:widget-settings' && tag !== 'BWidgetSettings') {
           this.errors.push({
             type: 'error',
             message: `Invalid child inside <b:widget>: Children of a <b:widget> must be <b:includable> elements (e.g. <b:includable id='main'>) or <b:widget-settings>. You cannot place <${tag}> directly inside <b:widget>.`,
@@ -155,8 +172,8 @@ export class BloggerThemeValidator {
       }
 
       // 5. Validate <b:includable> placement
-      if (tag === 'b:includable') {
-        if (parentTag !== 'b:widget' && parentTag !== 'b:defaultmarkup') {
+      if (tag === 'b:includable' || tag === 'BIncludable') {
+        if (parentTag !== 'b:widget' && parentTag !== 'BWidget' && parentTag !== 'b:defaultmarkup' && parentTag !== 'BDefaultMarkup') {
           this.errors.push({
             type: 'error',
             message: `<b:includable> elements must sit directly inside a <b:widget> or a <b:defaultmarkup>. They cannot be placed inside <${parentTag || 'Fragment'}>.`,
@@ -182,7 +199,7 @@ export class BloggerThemeValidator {
         });
       }
 
-      if (tag === 'li' && parentTag !== 'ul' && parentTag !== 'ol' && parentTag !== 'menu') {
+      if (tag === 'li' && parentTag !== 'ul' && parentTag !== 'ol' && parentTag !== 'menu' && parentTag !== 'Ul' && parentTag !== 'Ol') {
         this.errors.push({
           type: 'warning',
           message: `Invalid HTML nesting: An <li> element must sit directly inside a <ul> or <ol> element (not <${parentTag || 'Fragment'}>).`,
@@ -190,7 +207,7 @@ export class BloggerThemeValidator {
         });
       }
 
-      if ((tag === 'td' || tag === 'th') && parentTag !== 'tr') {
+      if ((tag === 'td' || tag === 'th') && parentTag !== 'tr' && parentTag !== 'Tr') {
         this.errors.push({
           type: 'warning',
           message: `Invalid HTML nesting: A <${tag}> element must sit directly inside a <tr> element (not <${parentTag || 'Fragment'}>).`,
@@ -198,7 +215,8 @@ export class BloggerThemeValidator {
         });
       }
 
-      if (tag === 'tr' && parentTag !== 'table' && parentTag !== 'thead' && parentTag !== 'tbody' && parentTag !== 'tfoot') {
+      if (tag === 'tr' && parentTag !== 'table' && parentTag !== 'thead' && parentTag !== 'tbody' && parentTag !== 'tfoot' &&
+          parentTag !== 'Table' && parentTag !== 'Thead' && parentTag !== 'Tbody' && parentTag !== 'Tfoot') {
         this.errors.push({
           type: 'warning',
           message: `Invalid HTML nesting: A <tr> element must sit directly inside a <table>, <thead>, <tbody>, or <tfoot> (not <${parentTag || 'Fragment'}>).`,
@@ -208,24 +226,8 @@ export class BloggerThemeValidator {
 
       // Move deep
       const nextPath = [...path, tag];
-      const built = component.build ? component.build() : null;
-      if (built) {
-        this._traverseBuilt(built, nextPath);
-      }
-    } else if (component && typeof component.build === 'function') {
-      const built = component.build();
-      if (built) {
-        this._traverseBuilt(built, path);
-      }
-    }
-  }
-
-  private _traverseBuilt(built: any, path: string[]): void {
-    if (typeof built.build === 'function' || typeof built.tag === 'string') {
-      this._traverse(built, path);
-    } else if (built[Symbol.iterator]) {
-      for (const child of built) {
-        this._traverse(child, path);
+      if (props.children) {
+        this._traverse(props.children, nextPath);
       }
     }
   }

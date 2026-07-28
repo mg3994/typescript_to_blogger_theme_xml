@@ -1,20 +1,16 @@
 # AI Skill 2: Styling and CSS Bundling
 
-This guide explains how to apply styles, automatically compile inline CSS styling objects, and bundle external `.css` files into optimized template skins.
+This guide explains how standard React-first styling is handled, compiled, and optimized into Blogger-compatible outputs.
 
 ---
 
 ## 1. Inline CSS Object Compilation
 
-Standard HTML uses inline styles as a string. However, when aligning with React's JSX syntax, inline styles are passed as nested JavaScript objects with camelCase keys.
+Standard React DOM Server natively converts styling objects (passed via `style={{ ... }}`) into standard inline style attributes, making camelCase properties like `marginTop: '15px'` render as standard lowercase, hyphenated CSS definitions!
 
-The `@antinna/blogger-theme` serializer automatically:
-- Resolves style objects (e.g. `style={{ marginTop: '10px', backgroundColor: '#fff', fontSize: 14 }}`).
-- Converts camelCase keys to standard hyphenated/kebab-case CSS keys (`marginTop` -> `margin-top`).
-- Automatically appends the `px` suffix to standard numeric values (e.g. `fontSize: 14` -> `font-size: 14px;`).
-- Concatenates the rules into a single standard inline CSS style string.
+Our engine natively supports this standard React behavior, rendering standard styling objects without any custom parser hacks.
 
-### JSX Code
+### React TSX
 ```tsx
 const element = (
   <div style={{ color: 'red', marginTop: '15px', backgroundColor: '#ffffff', fontSize: 14 }}>
@@ -25,24 +21,25 @@ const element = (
 
 ### Generated XML Output
 ```xml
-<div style="color: red; margin-top: 15px; background-color: #ffffff; font-size: 14px;">Hello Styling!</div>
+<div style="color:red;margin-top:15px;background-color:#ffffff;font-size:14px">Hello Styling!</div>
 ```
 
 ---
 
 ## 2. Dynamic Attribute Mapping
 
-The compiler translates standard React-compatible camelCase JSX attribute names into their lowercase/hyphenated HTML/XML equivalent properties during render.
+React DOM Server natively translates standard React attribute names (like `className` and `htmlFor`) to standard XHTML `class` and `for` attributes.
+Additionally, our post-processor maps any React camelCase elements (like `noValidate`, `readOnly`, `maxLength`, `tabIndex`, `autoFocus`) into standard lowercase XHTML attributes perfectly.
 
-| JSX Property | Rendered XML |
+| React JSX Property | Rendered XML |
 | :--- | :--- |
 | `className="..."` | `class="..."` |
 | `htmlFor="..."` | `for="..."` |
 | `tabIndex={1}` | `tabindex="1"` |
-| `readOnly={true}` | `readonly="true"` |
+| `readOnly={true}` | `readonly=""` |
 | `maxLength={20}` | `maxlength="20"` |
-| `noValidate={true}`| `novalidate="true"` |
-| `autoFocus={true}` | `autofocus="true"` |
+| `noValidate={true}`| `novalidate=""` |
+| `autoFocus={true}` | `autofocus=""` |
 
 ---
 
@@ -67,12 +64,13 @@ src/
 
 ### Layout TSX
 ```tsx
+import React from 'react';
 import { BSkin, BTemplateSkin } from '@antinna/blogger-theme';
 
 const themeHead = [
-  <title>My Professional Theme</title>,
+  <title key="title">My Professional Theme</title>,
 
   // Natively loads, bundles variables.css and main.css, minifies, and inlines:
-  <BSkin css="./src/styles/main.css" />
+  <BSkin key="skin" css="./src/styles/main.css" />
 ];
 ```

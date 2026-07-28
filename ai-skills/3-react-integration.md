@@ -1,18 +1,15 @@
 # AI Skill 3: React 19 Integration & Code Bundling
 
-This guide explains how developers can build a full-scale React 19 application, bundle it, and embed it dynamically into a Blogger layout using the programmatic builder and `BClientScript`.
+This guide explains how developers can build a full-scale React 19 application, bundle it, and embed it dynamically into a Blogger layout using standard React DOM Server rendering and `BClientScript`.
 
 ---
 
-## 1. Local JSX Namespace (Pollution Prevention)
+## 1. Clean React Namespace Alignment
 
-Typical JSX libraries register a global `JSX` namespace, which creates immediate type collision errors if standard React and a custom XML library are used together in the same workspace.
-
-To prevent this:
-1. `@antinna/blogger-theme` defines and exports a **local JSX namespace** in `src/types/jsx.ts`.
-2. It does not declare a global JSX namespace.
-3. In TSX templates, use the TSX compiler directive at the top of the file to target our custom automatic compiler runtime:
-   `/** @jsxImportSource @antinna/blogger-theme */`
+The new architecture is built **100% on top of React 19**.
+- We use the standard React `JSX` namespace natively.
+- No local custom JSX runtimes are required, completely avoiding any JSX name collisions or type resolution problems.
+- Standard React features (such as Context, Hooks, Suspense, Portals, Fragments, and standard functional/class components) are fully supported natively.
 
 ---
 
@@ -41,16 +38,18 @@ At render time, `BClientScript`:
 
 ### embedding React inside Blogger TSX
 ```tsx
-/** @jsxImportSource @antinna/blogger-theme */
+import React from 'react';
 import { BClientScript } from '@antinna/blogger-theme';
 
-const Layout = () => (
-  <main>
-    {/* React will mount here on the client-side */}
-    <div id="react-root"></div>
+export function Layout() {
+  return (
+    <main>
+      {/* React will mount here on the client-side */}
+      <div id="react-root"></div>
 
-    {/* Dynamically compiles, bundles, and embeds the client application on-demand */}
-    <BClientScript scriptPath="./src/index.tsx" mode="cdata" />
-  </main>
-);
+      {/* Dynamically compiles, bundles, and embeds the client application on-demand */}
+      <BClientScript scriptPath="./src/index.tsx" mode="cdata" />
+    </main>
+  );
+}
 ```

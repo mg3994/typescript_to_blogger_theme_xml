@@ -1,85 +1,60 @@
+import React from 'react';
 import { buildSync } from 'esbuild';
 import * as fs from 'fs';
 import * as path from 'path';
-import { Component, DomComponent, RawText, Text } from './core.js';
 
 export interface BClientScriptProps {
   scriptPath: string;
   mode?: "raw" | "cdata" | "escaped";
 }
 
-/**
- * Loads a JS/TS script from disk and compiles/bundles it to an IIFE at render time.
- * The output script is fully compiled and bundled using esbuild.
- */
-export class BClientScript extends Component {
-  public scriptPath: string;
-  public mode?: "raw" | "cdata" | "escaped";
-
-  constructor(props: BClientScriptProps | string) {
-    super();
-    if (typeof props === 'string') {
-      this.scriptPath = props;
-      this.mode = "raw";
-    } else {
-      this.scriptPath = props.scriptPath;
-      this.mode = props.mode || "raw";
-    }
+function compileToJs(scriptPath: string): string {
+  const absolutePath = path.resolve(scriptPath);
+  if (!fs.existsSync(absolutePath)) {
+    return `// Error: Script not found at ${absolutePath}`;
   }
 
-  override build(): Component[] {
-    return [new CompiledScript(this.scriptPath, this.mode)];
+  try {
+    const result = buildSync({
+      entryPoints: [absolutePath],
+      bundle: true,
+      minify: true,
+      format: 'iife',
+      target: 'esnext',
+      write: false,
+      logLevel: 'silent',
+    });
+
+    if (result.errors && result.errors.length > 0) {
+      return `// Error compiling to JS:\n${result.errors.map(e => e.text).join('\n')}`;
+    }
+
+    const outputFiles = result.outputFiles;
+    if (outputFiles && outputFiles.length > 0) {
+      return outputFiles[0].text;
+    }
+    return '// Error: No output generated';
+  } catch (err: any) {
+    return `// Error compiling to JS:\n${err.message || err}`;
   }
 }
 
 /**
- * Internal helper component that compiles a TypeScript or JavaScript file to an IIFE.
+ * React-first component that loads a JS/TS script from disk and compiles/bundles it to an IIFE at render time.
  */
-class CompiledScript extends DomComponent {
-  constructor(public scriptPath: string, public mode?: "raw" | "cdata" | "escaped") {
-    super('script', { type: 'text/javascript' });
-  }
+export function BClientScript({ scriptPath, mode }: BClientScriptProps) {
+  const jsContent = compileToJs(scriptPath);
+  const finalMode = mode || "raw";
 
-  override build(): Component[] {
-    const jsContent = this._compileToJs();
-    if (this.mode === 'cdata') {
-      return [new RawText(`//<![CDATA[\n${jsContent}\n//]]>`)];
-    } else if (this.mode === 'escaped') {
-      return [new Text(jsContent, true)];
-    } else {
-      // default is 'raw'
-      return [new Text(jsContent, false)];
-    }
-  }
-
-  private _compileToJs(): string {
-    const absolutePath = path.resolve(this.scriptPath);
-    if (!fs.existsSync(absolutePath)) {
-      return `// Error: Script not found at ${absolutePath}`;
-    }
-
-    try {
-      const result = buildSync({
-        entryPoints: [absolutePath],
-        bundle: true,
-        minify: true,
-        format: 'iife',
-        target: 'esnext',
-        write: false,
-        logLevel: 'silent',
-      });
-
-      if (result.errors && result.errors.length > 0) {
-        return `// Error compiling to JS:\n${result.errors.map(e => e.text).join('\n')}`;
-      }
-
-      const outputFiles = result.outputFiles;
-      if (outputFiles && outputFiles.length > 0) {
-        return outputFiles[0].text;
-      }
-      return '// Error: No output generated';
-    } catch (err: any) {
-      return `// Error compiling to JS:\n${err.message || err}`;
-    }
+  if (finalMode === 'cdata') {
+    return React.createElement('script', {
+      type: 'text/javascript',
+      dangerouslySetInnerHTML: { __html: `//<![CDATA[\n${jsContent}\n//]]>` }
+    });
+  } else {
+    return React.createElement('script', {
+      type: 'text/javascript',
+      dangerouslySetInnerHTML: { __html: jsContent }
+    });
   }
 }

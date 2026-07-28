@@ -1,4 +1,4 @@
-/** @jsxImportSource @antinna/blogger-theme */
+import React from 'react';
 import * as fs from 'fs';
 import * as path from 'path';
 import {
@@ -17,18 +17,16 @@ import {
   Data
 } from '@antinna/blogger-theme';
 
-// Define a modular layout component using TSX (Declarative JSX style)
-// Note: our generalized types support standard lowercase tags like div, span, etc.
-// as well as custom Blogger elements (BIf, BIncludable) and expression prefixing!
+// Define a modular layout component using standard React elements and attributes!
 const BlogHeader = () => (
-  <header class="header-container" expr:style="'background-color: #fff; border-bottom: 1px solid #ddd;'">
+  <header className="header-container" expr:style="'background-color: #fff; border-bottom: 1px solid #ddd;'">
     <BSection id="main-header" className="main-header-sec" maxwidgets={1} showaddelement={true}>
       <BWidget id="Header1" type="Header" title="My React Blog Header" locked={true} />
     </BSection>
 
     {/* Example of b:if, b:attr, and expression mapping inside TSX layouts */}
     <BIf cond="data:view.isHomepage">
-      <div class="homepage-banner" cond="data:view.isHomepage">
+      <div className="homepage-banner" cond="data:view.isHomepage">
         <h1 expr:title="data:blog.title">Welcome to {Expr.get('blog.title')}!</h1>
         <p>A cutting-edge blog layout engineered entirely in TypeScript.</p>
       </div>
@@ -37,19 +35,19 @@ const BlogHeader = () => (
 );
 
 const BlogLayout = () => (
-  <div class="wrapper-pane">
+  <div className="wrapper-pane">
     <BlogHeader />
 
-    <main class="content-area">
+    <main className="content-area">
       {/* Example of Blogger custom inclusion/parameters using TSX inside a valid Widget container */}
       <BSection id="main-content-sec">
         <BWidget id="Blog1" type="Blog">
           <BIncludable id="main">
-            <div class="post-item-view" expr:id="'post-' + data:post.id">
+            <div className="post-item-view" expr:id="'post-' + data:post.id">
               <h2 expr:class="data:post.class">
                 <a expr:href="data:post.url"><BData value="post.title" /></a>
               </h2>
-              <div class="post-body">
+              <div className="post-body">
                 <BData value="post.body" />
               </div>
             </div>
@@ -80,11 +78,11 @@ function buildTheme() {
       'b:layoutsversion': '3',
     },
     head: [
-      <Title>React Blogger Theme Example</Title>,
-      <BSkin css="./src/theme.css" />
+      <Title key="title">React Blogger Theme Example</Title>,
+      <BSkin key="skin" css="./src/theme.css" />
     ],
     body: [
-      <BlogLayout />
+      <BlogLayout key="layout" />
     ]
   });
 

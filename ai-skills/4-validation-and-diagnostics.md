@@ -8,7 +8,7 @@ This guide describes the built-in validation rules, diagnostics, and semantic wa
 
 Blogger layouts are strict. Placing elements incorrectly can result in silent rendering failures, broken layouts, or XML compilation rejections on Blogger's servers.
 
-The `BloggerThemeValidator` traverses the entire generated JSX/Component tree to analyze and enforce the following rules:
+The `BloggerThemeValidator` traverses the entire generated React Element Tree to analyze and enforce the following rules:
 
 ### Error Rules
 - **Unique IDs:** All `<b:section>` and `<b:widget>` elements must have globally unique `id` values. Duplicate IDs trigger validation errors.
@@ -29,14 +29,14 @@ The `BloggerThemeValidator` traverses the entire generated JSX/Component tree to
 
 ## 2. Using the Validator in Your Code
 
-To execute validation programmatically on your component tree, use the `BloggerThemeValidator` class:
+To execute validation programmatically on your React element tree, use the `BloggerThemeValidator` class:
 
 ```typescript
 import { BloggerThemeValidator } from '@antinna/blogger-theme';
 
 const validator = new BloggerThemeValidator();
 
-// Validate a component layout
+// Validate a React element layout
 const issues = validator.validate(myLayoutComponent);
 
 for (const issue of issues) {
