@@ -11,7 +11,30 @@ A lightweight TypeScript & ESNext library for generating Blogger (Blogspot) them
 - **XML-Safe rendering:** Automatic XML entity escaping and removal of XML 1.0 control characters.
 - **TypeScript 5+ and ESNext-native:** Fully typed, clean, modern ES module structure.
 - **On-Demand client script compilation:** Compile, bundle, and minify client-side TypeScript/JavaScript to self-invoking IIFEs inside Blogger templates using `esbuild` at render-time.
+- **Inline CSS Object Compilation:** Pass standard style objects (like `style={{ marginTop: '10px' }}`) inside TSX and have them automatically compiled to standard inline style strings.
+- **Automated CSS Bundling:** Organize layout styles inside standard external `.css` files and pass them directly to `BSkin` or `BTemplateSkin` to have them dynamically compiled, bundled (resolving `@import` rules), and minified using `esbuild` natively.
+- **Decoupled shared types:** Full integration with `@antinna/types-blogger-react` to prevent type collisions and provide absolute parity with React in mixed workspaces.
+- **Validation and Devtools:** Pre-render diagnostics checking Blogger layouts for nesting errors (such as nested sections, widgets outside sections, and duplicate IDs) as well as XHTML structure alerts.
 - **Direct rendering:** Directly render any component using `.render()`.
+
+---
+
+## Packages in This Repo
+
+1. **`@antinna/blogger-theme`** (Root package) - The compiler, devtool, CLI, automatic JSX runtime, and components.
+2. **`@antinna/types-blogger-react`** (`packages/types-blogger-react`) - Decoupled, DRY typescript typings extending standard React to support Blogger layouts natively.
+
+---
+
+## AI Agent Skills (Developer Guides)
+
+To help developers and AI agents build awesome Blogger templates easily, we have prepared comprehensive guides:
+
+- [Skill 1: Core Declarative Templating](./ai-skills/1-core-templating.md)
+- [Skill 2: Styling and CSS Bundling](./ai-skills/2-styling-and-css.md)
+- [Skill 3: React 19 Integration & Code Bundling](./ai-skills/3-react-integration.md)
+- [Skill 4: Blogger Structural Validation & Diagnostics](./ai-skills/4-validation-and-diagnostics.md)
+- [Skill 5: CLI and Watch-Compiler](./ai-skills/5-cli-and-watch.md)
 
 ---
 
@@ -19,9 +42,10 @@ A lightweight TypeScript & ESNext library for generating Blogger (Blogspot) them
 
 ```bash
 npm install @antinna/blogger-theme
+npm install -D @antinna/types-blogger-react
 ```
 
-Make sure you have `esbuild` installed (which is a peer dependency used for on-demand script compilation).
+Make sure you have `esbuild` installed (which is a peer dependency used for on-demand script and stylesheet bundling).
 
 ---
 
@@ -59,7 +83,7 @@ export const BlogLayout = () => (
     </BSection>
 
     <BIf cond="data:view.isPost">
-      <div class="post-item">
+      <div class="post-item" style={{ marginTop: '20px', padding: '15px' }}>
         <BData value="post.body" />
       </div>
     </BIf>
@@ -67,7 +91,7 @@ export const BlogLayout = () => (
 );
 ```
 
-### 2. Generate Blogger Theme XML
+### 2. Generate Blogger Theme XML (with External CSS Bundling)
 
 ```tsx
 /** @jsxImportSource @antinna/blogger-theme */
@@ -82,7 +106,9 @@ const theme = new BloggerTheme({
   },
   head: [
     <Title>My Modern Blogger Theme</Title>,
-    <BSkin css="body { font-family: sans-serif; background: #fafafa; }" />
+
+    // Automatically loads, recursively bundles, and minifies your external CSS file:
+    <BSkin css="./src/styles/theme.css" />
   ],
   body: [
     <BlogLayout />
