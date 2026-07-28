@@ -283,6 +283,34 @@ export class Expr {
     if (crop !== undefined) args.push(`"${crop}"`);
     return `resizeImage(${args.join(', ')})`;
   }
+
+  /**
+   * Combines multiple conditions with 'and'.
+   */
+  static and(...conds: string[]): string {
+    return conds.map(c => `(${c})`).join(' and ');
+  }
+
+  /**
+   * Combines multiple conditions with 'or'.
+   */
+  static or(...conds: string[]): string {
+    return conds.map(c => `(${c})`).join(' or ');
+  }
+
+  /**
+   * Negates a condition.
+   */
+  static not(cond: string): string {
+    return `not (${cond})`;
+  }
+
+  /**
+   * Compares two values for equality.
+   */
+  static eq(a: string, b: string): string {
+    return `(${a}) == (${b})`;
+  }
 }
 
 /**
@@ -482,5 +510,80 @@ export class Select extends DomComponent {
 export class Option extends DomComponent {
   constructor(props?: Record<string, any> | null, ...children: any[]) {
     super('option', props, ...children);
+  }
+}
+
+export class Table extends DomComponent {
+  constructor(props?: Record<string, any> | null, ...children: any[]) {
+    super('table', props, ...children);
+  }
+}
+
+export class Thead extends DomComponent {
+  constructor(props?: Record<string, any> | null, ...children: any[]) {
+    super('thead', props, ...children);
+  }
+}
+
+export class Tbody extends DomComponent {
+  constructor(props?: Record<string, any> | null, ...children: any[]) {
+    super('tbody', props, ...children);
+  }
+}
+
+export class Tfoot extends DomComponent {
+  constructor(props?: Record<string, any> | null, ...children: any[]) {
+    super('tfoot', props, ...children);
+  }
+}
+
+export class Tr extends DomComponent {
+  constructor(props?: Record<string, any> | null, ...children: any[]) {
+    super('tr', props, ...children);
+  }
+}
+
+export class Td extends DomComponent {
+  constructor(props?: Record<string, any> | null, ...children: any[]) {
+    super('td', props, ...children);
+  }
+}
+
+export class Th extends DomComponent {
+  constructor(props?: Record<string, any> | null, ...children: any[]) {
+    super('th', props, ...children);
+  }
+}
+
+export class Iframe extends DomComponent {
+  constructor(props?: Record<string, any> | null) {
+    super('iframe', props);
+  }
+  override build(): Component[] {
+    return [];
+  }
+}
+
+export class Canvas extends DomComponent {
+  constructor(props?: Record<string, any> | null, ...children: any[]) {
+    super('canvas', props, ...children);
+  }
+}
+
+export class Textarea extends DomComponent {
+  constructor(props?: Record<string, any> | null, ...children: any[]) {
+    super('textarea', props, ...children);
+  }
+}
+
+export class Pre extends DomComponent {
+  constructor(props?: Record<string, any> | null, ...children: any[]) {
+    super('pre', props, ...children);
+  }
+}
+
+export class Code extends DomComponent {
+  constructor(props?: Record<string, any> | null, ...children: any[]) {
+    super('code', props, ...children);
   }
 }

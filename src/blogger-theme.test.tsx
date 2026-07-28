@@ -425,4 +425,37 @@ describe('Blogger Structure Validator (Devtool)', () => {
     // Expect CDATA block inside skin to preserve spaces and format
     expect(minifiedXml).toContain('body { margin:   0; }');
   });
+
+  it('supports Expr logical expression helpers correctly', () => {
+    const condAnd = Expr.and('data:view.isPost', 'data:post.allowComments');
+    expect(condAnd).toBe('(data:view.isPost) and (data:post.allowComments)');
+
+    const condOr = Expr.or('data:view.isHomepage', 'data:view.isArchive');
+    expect(condOr).toBe('(data:view.isHomepage) or (data:view.isArchive)');
+
+    const condNot = Expr.not('data:view.isError');
+    expect(condNot).toBe('not (data:view.isError)');
+
+    const condEq = Expr.eq('data:blog.pageType', '"item"');
+    expect(condEq).toBe('(data:blog.pageType) == ("item")');
+  });
+
+  it('renders standard table and media components correctly', () => {
+    const tableElement = (
+      <table>
+        <thead>
+          <tr>
+            <th>Heading</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Content</td>
+          </tr>
+        </tbody>
+      </table>
+    );
+    const xml = tableElement.render();
+    expect(xml).toContain('<table><thead><tr><th>Heading</th></tr></thead><tbody><tr><td>Content</td></tr></tbody></table>');
+  });
 });
