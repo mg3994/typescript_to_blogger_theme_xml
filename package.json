@@ -26,7 +26,7 @@
     }
   },
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && cp src/globals.d.ts dist/globals.d.ts && node -e \"const fs = require('fs'); const d = fs.readFileSync('dist/index.d.ts', 'utf8'); fs.writeFileSync('dist/index.d.ts', '/// <reference path=\\\"./globals.d.ts\\\" />\\n' + d);\"",
     "test": "vitest run"
   },
   "dependencies": {

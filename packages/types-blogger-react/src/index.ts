@@ -1,3 +1,4 @@
+/// <reference path="./globals.d.ts" />
 import * as React from 'react';
 import * as CSS from 'csstype';
 

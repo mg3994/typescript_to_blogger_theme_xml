@@ -1,15 +1,29 @@
 {
   "name": "@antinna/types-blogger-react",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "DRY and decoupled types for blogger-theme supporting React alignment",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./jsx-runtime": {
+      "import": "./dist/jsx-runtime.js",
+      "types": "./dist/jsx-runtime.d.ts"
+    },
+    "./jsx-dev-runtime": {
+      "import": "./dist/jsx-dev-runtime.js",
+      "types": "./dist/jsx-dev-runtime.d.ts"
+    }
+  },
   "publishConfig": {
     "access": "public"
   },
   "scripts": {
-    "build": "tsc"
+    "build": "tsc && cp src/globals.d.ts dist/globals.d.ts && node -e \"const fs = require('fs'); const d = fs.readFileSync('dist/index.d.ts', 'utf8'); fs.writeFileSync('dist/index.d.ts', '/// <reference path=\\\"./globals.d.ts\\\" />\\n' + d);\""
   },
   "dependencies": {},
   "peerDependencies": {

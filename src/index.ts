@@ -1,3 +1,4 @@
+/// <reference path="./globals.d.ts" />
 export * from './core.js';
 export * from './blogger-components.js';
 export * from './html-components.js';
