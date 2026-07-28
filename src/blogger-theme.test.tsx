@@ -346,4 +346,25 @@ describe('Blogger Structure Validator (Devtool)', () => {
     expect(xml).toContain('<div class="react-style-wrapper">');
     expect(xml).toContain('<p class="react-para">');
   });
+
+  it('supports inline style CSS object compilation correctly', () => {
+    const styleTree = (
+      <div style={{ color: 'red', marginTop: '15px', backgroundColor: '#fff', fontSize: 14 }}>
+        Styled Text
+      </div>
+    );
+    const xml = styleTree.render();
+    expect(xml).toContain('<div style="color: red; margin-top: 15px; background-color: #fff; font-size: 14px;">Styled Text</div>');
+  });
+
+  it('supports automatic React attribute camelCase mapping', () => {
+    const formTree = (
+      <form noValidate tabIndex={1}>
+        <input type="text" readOnly maxLength={20} autoFocus />
+      </form>
+    );
+    const xml = formTree.render();
+    expect(xml).toContain('<form novalidate="true" tabindex="1">');
+    expect(xml).toContain('<input type="text" readonly="true" maxlength="20" autofocus="true"/>');
+  });
 });

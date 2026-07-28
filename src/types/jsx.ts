@@ -57,7 +57,7 @@ export namespace JSX {
     id?: string;
     class?: string;
     className?: string;
-    style?: any;
+    style?: Record<string, any> | string;
     title?: string;
     name?: string;
     type?: string;
@@ -569,7 +569,7 @@ export namespace JSX {
     color?: string;
     height?: number | string;
     id?: string;
-    style?: any;
+    style?: Record<string, any> | string;
     viewBox?: string;
     [attributeName: string]: any;
   }

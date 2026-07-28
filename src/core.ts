@@ -73,6 +73,59 @@ export class RawText extends Text {
 /**
  * A DOM-like element with a tag, attributes, and child components.
  */
+function camelToKebab(str: string): string {
+  return str.replace(/([A-Z])/g, '-$1').toLowerCase();
+}
+
+function stringifyStyle(styleObj: Record<string, any>): string {
+  return Object.entries(styleObj)
+    .map(([key, val]) => {
+      const formattedKey = camelToKebab(key);
+      const formattedVal = typeof val === 'number' && val !== 0 ? `${val}px` : String(val);
+      return `${formattedKey}: ${formattedVal};`;
+    })
+    .join(' ');
+}
+
+function convertReactAttributeToHtml(key: string): string {
+  if (key.startsWith('data-') || key.startsWith('aria-') || key.startsWith('expr:')) {
+    return key;
+  }
+  const mapping: Record<string, string> = {
+    className: 'class',
+    htmlFor: 'for',
+    tabIndex: 'tabindex',
+    autoFocus: 'autofocus',
+    autoPlay: 'autoplay',
+    readOnly: 'readonly',
+    maxLength: 'maxlength',
+    minLength: 'minlength',
+    formAction: 'formaction',
+    formEncType: 'formenctype',
+    formMethod: 'formmethod',
+    formNoValidate: 'formnovalidate',
+    formTarget: 'formtarget',
+    noValidate: 'novalidate',
+    srcSet: 'srcset',
+    controlsList: 'controlslist',
+    crossOrigin: 'crossorigin',
+    playsInline: 'playsinline',
+    colSpan: 'colspan',
+    rowSpan: 'rowspan',
+    cellPadding: 'cellpadding',
+    cellSpacing: 'cellspacing',
+    srcDoc: 'srcdoc',
+    referrerPolicy: 'referrerpolicy',
+  };
+  if (mapping[key]) {
+    return mapping[key];
+  }
+  if (/^on[A-Z]/.test(key)) {
+    return key.toLowerCase();
+  }
+  return key;
+}
+
 export class DomComponent extends Component {
   public tag: string;
   public attributes: Record<string, string> = {};
@@ -100,7 +153,13 @@ export class DomComponent extends Component {
         if (attrs) {
           for (const [key, val] of Object.entries(attrs)) {
             if (val !== null && val !== undefined) {
-              this.attributes[key] = String(val);
+              const isBloggerTag = tag.startsWith('b:');
+              const htmlKey = isBloggerTag ? key : convertReactAttributeToHtml(key);
+              if (htmlKey === 'style' && typeof val === 'object' && !Array.isArray(val)) {
+                this.attributes['style'] = stringifyStyle(val);
+              } else {
+                this.attributes[htmlKey] = String(val);
+              }
             }
           }
         }
@@ -118,7 +177,13 @@ export class DomComponent extends Component {
             continue;
           }
           if (val !== null && val !== undefined) {
-            this.attributes[key] = String(val);
+            const isBloggerTag = tag.startsWith('b:');
+            const htmlKey = isBloggerTag ? key : convertReactAttributeToHtml(key);
+            if (htmlKey === 'style' && typeof val === 'object' && !Array.isArray(val)) {
+              this.attributes['style'] = stringifyStyle(val);
+            } else {
+              this.attributes[htmlKey] = String(val);
+            }
           }
         }
       }
@@ -218,8 +283,7 @@ export class Renderer {
       // It's a DomComponent node
       write(`<${component.tag}`);
       for (const [key, value] of Object.entries(component.attributes)) {
-        const renderedKey = key === 'className' ? 'class' : key;
-        write(` ${renderedKey}="${escapeXml(value as string)}"`);
+        write(` ${key}="${escapeXml(value as string)}"`);
       }
 
       const built = component.build();
