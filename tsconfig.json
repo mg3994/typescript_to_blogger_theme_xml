@@ -13,7 +13,7 @@
     "forceConsistentCasingInFileNames": true,
     "jsx": "react-jsx",
     "jsxImportSource": "@antinna/blogger-theme",
-    "baseUrl": ".",
+   
     "paths": {
       "@antinna/blogger-theme": ["./src/index.ts"],
       "@antinna/blogger-theme/*": ["./src/*"]

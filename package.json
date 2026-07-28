@@ -1,6 +1,6 @@
 {
   "name": "@antinna/blogger-theme",
-  "version": "1.0.0",
+  "version": "5.0.0",
   "description": "A lightweight TypeScript/ESNext library for generating Blogger theme XML using a clean, declarative component API with TSX support.",
   "type": "module",
   "main": "./dist/index.js",

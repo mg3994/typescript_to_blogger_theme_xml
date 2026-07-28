@@ -13,7 +13,7 @@ function showHelp() {
 🚀 Blogger Theme Compiler CLI
 
 Usage:
-  npx blogger-theme <entrypoint.tsx> [options]
+  npx @antinna/blogger-theme <entrypoint.tsx> [options]
 
 Options:
   -o, --out <file>   Specify the output XML file path (defaults to stdout)
