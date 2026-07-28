@@ -1,0 +1,74 @@
+/* Blogger Theme Global Stylesheet */
+
+body {
+  background-color: #f3f4f6;
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  color: #1f2937;
+}
+
+.header-container {
+  background-color: #ffffff;
+  border-bottom: 1px solid #e5e7eb;
+  padding: 15px 30px;
+}
+
+.homepage-banner {
+  padding: 30px;
+  background-color: #f9fafb;
+  border-radius: 8px;
+  margin-top: 15px;
+  border: 1px solid #e5e7eb;
+}
+
+.homepage-banner h1 {
+  margin: 0;
+  color: #111827;
+  font-size: 24px;
+}
+
+.homepage-banner p {
+  margin: 10px 0 0 0;
+  color: #4b5563;
+}
+
+.wrapper-pane {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.content-area {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.post-item-view {
+  background: #ffffff;
+  padding: 24px;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e5e7eb;
+}
+
+.post-item-view h2 {
+  margin-top: 0;
+  font-size: 20px;
+}
+
+.post-item-view h2 a {
+  color: #2563eb;
+  text-decoration: none;
+}
+
+.post-item-view h2 a:hover {
+  text-decoration: underline;
+}
+
+.post-body {
+  margin-top: 12px;
+  color: #374151;
+  line-height: 1.6;
+}

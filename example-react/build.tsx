@@ -81,7 +81,7 @@ function buildTheme() {
     },
     head: [
       <Title>React Blogger Theme Example</Title>,
-      <BSkin css="body { background-color: #f3f4f6; margin: 0; font-family: sans-serif; }" />
+      <BSkin css="./src/theme.css" />
     ],
     body: [
       <BlogLayout />
