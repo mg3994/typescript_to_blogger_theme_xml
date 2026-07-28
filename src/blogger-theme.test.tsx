@@ -16,6 +16,7 @@ import {
   BElse,
   BData,
   BSkin,
+  BTemplateSkin,
   BVariable,
   BGroup,
   BClientScript,
@@ -125,6 +126,40 @@ describe('Blogger Specific Components', () => {
       ']]></b:skin>';
 
     expect(skin.render()).toBe(expectedSkinXml);
+  });
+
+  it('supports compiling and bundling CSS from file paths in BSkin and BTemplateSkin', () => {
+    const tempMainCss = path.resolve('temp-main.css');
+    const tempImportCss = path.resolve('temp-import.css');
+
+    fs.writeFileSync(tempImportCss, `
+      .imported {
+        color: blue;
+      }
+    `);
+
+    fs.writeFileSync(tempMainCss, `
+      @import "./temp-import.css";
+      body {
+        margin: 0;
+        padding: 0;
+      }
+    `);
+
+    try {
+      const skin = new BSkin(tempMainCss);
+      const renderedSkin = skin.render();
+      expect(renderedSkin).toContain('.imported{color:#00f}');
+      expect(renderedSkin).toContain('body{margin:0;padding:0}');
+
+      const templateSkin = new BTemplateSkin({ css: tempMainCss });
+      const renderedTemplateSkin = templateSkin.render();
+      expect(renderedTemplateSkin).toContain('.imported{color:#00f}');
+      expect(renderedTemplateSkin).toContain('body{margin:0;padding:0}');
+    } finally {
+      if (fs.existsSync(tempMainCss)) fs.unlinkSync(tempMainCss);
+      if (fs.existsSync(tempImportCss)) fs.unlinkSync(tempImportCss);
+    }
   });
 });
 

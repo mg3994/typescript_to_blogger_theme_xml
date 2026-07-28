@@ -1,9 +1,27 @@
 import * as React from 'react';
+import * as CSS from 'csstype';
+
+// Export CSS namespace for direct utility use in standard projects
+export { CSS };
+
+// Augment React attributes to support Blogger conditional logic, expression binding, and rich CSS inline properties natively!
+declare module 'react' {
+  interface HTMLAttributes<T> {
+    cond?: string;
+    style?: React.CSSProperties;
+    [exprAttr: `expr:${string}`]: any;
+  }
+  interface SVGAttributes<T> {
+    cond?: string;
+    style?: React.CSSProperties;
+    [exprAttr: `expr:${string}`]: any;
+  }
+}
 
 // Augmented JSX namespace for Blogger templates that can be used directly or within standard React JSX workflows.
 declare global {
   namespace JSX {
-    // We can define custom element interfaces for standard Blogger XML elements
+    // Custom element interfaces for standard Blogger XML elements
     interface IntrinsicElements {
       'b:section': React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement> & {
         id: string;

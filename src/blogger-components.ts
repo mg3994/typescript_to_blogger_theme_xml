@@ -1,4 +1,33 @@
 import { Component, DomComponent, RawText } from './core.js';
+import { buildSync } from 'esbuild';
+import * as fs from 'fs';
+import * as path from 'path';
+
+function bundleCss(cssInput: string): string {
+  const isFile = cssInput.endsWith('.css');
+  if (!isFile) {
+    return cssInput;
+  }
+  const absolutePath = path.resolve(cssInput);
+  if (!fs.existsSync(absolutePath)) {
+    return `/* Error: CSS file not found at ${absolutePath} */`;
+  }
+  try {
+    const result = buildSync({
+      entryPoints: [absolutePath],
+      bundle: true,
+      minify: true,
+      write: false,
+      logLevel: 'silent',
+    });
+    if (result.outputFiles && result.outputFiles.length > 0) {
+      return result.outputFiles[0].text.trim();
+    }
+    return `/* Error: esbuild generated no output for CSS bundling */`;
+  } catch (err: any) {
+    return `/* Error bundling CSS:\n${err.message || err} */`;
+  }
+}
 
 /**
  * Emits a raw XML comment in the rendered output.
@@ -303,7 +332,7 @@ export class BSkin extends Component {
       }
       sb += ' */\n';
     }
-    sb += this.css;
+    sb += bundleCss(this.css);
 
     return [
       new XmlComment('prettier-ignore'),
@@ -543,7 +572,7 @@ export class BTemplateSkin extends Component {
   override build(): Component[] {
     return [
       new XmlComment('prettier-ignore'),
-      new DomComponent('b:template-skin', null, new RawText(`<![CDATA[\n${this.css}\n]]>`)),
+      new DomComponent('b:template-skin', null, new RawText(`<![CDATA[\n${bundleCss(this.css)}\n]]>`)),
     ];
   }
 }
