@@ -23,7 +23,7 @@
     "access": "public"
   },
   "scripts": {
-    "build": "tsc && cp src/globals.d.ts dist/globals.d.ts && node -e \"const fs = require('fs'); const d = fs.readFileSync('dist/index.d.ts', 'utf8'); fs.writeFileSync('dist/index.d.ts', '/// <reference path=\\\"./globals.d.ts\\\" />\\n' + d);\""
+    "build": "tsc && node -e \"const fs = require('fs'); const path = require('path'); fs.copyFileSync(path.join('src', 'globals.d.ts'), path.join('dist', 'globals.d.ts')); const indexPath = path.join('dist', 'index.d.ts'); const d = fs.readFileSync(indexPath, 'utf8'); fs.writeFileSync(indexPath, '/// <reference path=\\\"./globals.d.ts\\\" />\\n' + d);\""
   },
   "dependencies": {},
   "peerDependencies": {
