@@ -6,9 +6,10 @@ import * as path from 'path';
 export interface BClientScriptProps {
   scriptPath: string;
   mode?: "raw" | "cdata" | "escaped";
+  minify?: boolean;
 }
 
-function compileToJs(scriptPath: string): string {
+function compileToJs(scriptPath: string, minify: boolean = true): string {
   const absolutePath = path.resolve(scriptPath);
   if (!fs.existsSync(absolutePath)) {
     return `// Error: Script not found at ${absolutePath}`;
@@ -18,7 +19,7 @@ function compileToJs(scriptPath: string): string {
     const result = buildSync({
       entryPoints: [absolutePath],
       bundle: true,
-      minify: true,
+      minify: minify,
       format: 'iife',
       target: 'esnext',
       write: false,
@@ -42,8 +43,8 @@ function compileToJs(scriptPath: string): string {
 /**
  * React-first component that loads a JS/TS script from disk and compiles/bundles it to an IIFE at render time.
  */
-export function BClientScript({ scriptPath, mode }: BClientScriptProps) {
-  const jsContent = compileToJs(scriptPath);
+export function BClientScript({ scriptPath, mode, minify = true }: BClientScriptProps) {
+  const jsContent = compileToJs(scriptPath, minify);
   const finalMode = mode || "raw";
 
   if (finalMode === 'cdata') {

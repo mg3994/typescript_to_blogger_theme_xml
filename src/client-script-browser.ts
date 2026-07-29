@@ -3,6 +3,7 @@ import React from 'react';
 export interface BClientScriptProps {
   scriptPath: string;
   mode?: "raw" | "cdata" | "escaped";
+  minify?: boolean;
 }
 
 /**

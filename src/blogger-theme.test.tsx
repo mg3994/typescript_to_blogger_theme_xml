@@ -147,6 +147,16 @@ describe('On-Demand Client Script Compilation', () => {
     expect(xml).toContain('//]]>');
     expect(xml).toContain('</script>');
   });
+
+  it('supports disabling JavaScript minification in BClientScript via minify={false}', () => {
+    const script = (
+      <BClientScript scriptPath={tempFile} mode="cdata" minify={false} />
+    );
+
+    const xml = renderToBloggerTheme(script);
+    expect(xml).toContain('var message = "Hello Blogger!";'); // expect unminified variables/whitespace to be preserved
+    expect(xml).toContain('var greet = (name) => `');
+  });
 });
 
 describe('BloggerTheme Generation', () => {
