@@ -30,6 +30,7 @@
     "test": "vitest run"
   },
   "dependencies": {
+    "@antinna/types-blogger-react": "file:./packages/types-blogger-react",
     "esbuild": "^0.24.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
